@@ -5,6 +5,7 @@ import Mines from './pages/Mines'
 import Exploration from './pages/Exploration'
 import Production from './pages/Production'
 import Recommendations from './pages/Recommendations'
+import WhatIf from './pages/WhatIf'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="exploration" element={<Exploration />} />
         <Route path="production" element={<Production />} />
         <Route path="recommendations" element={<Recommendations />} />
+        <Route path="whatif" element={<WhatIf />} />
       </Route>
     </Routes>
   )

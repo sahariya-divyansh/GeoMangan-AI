@@ -1,0 +1,54 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+
+.page-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+
+.page-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+
+.page-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.whatif-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.controls {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 4px; padding: 20px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.controls-label { font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+.slider-group { display: flex; flex-direction: column; gap: 8px; }
+
+.slider-label { font-size: 12px; color: var(--text-secondary); display: flex; justify-content: space-between; }
+
+.slider-label strong { color: var(--text-primary); }
+
+.slider { width: 100%; accent-color: var(--accent); }
+
+.result {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 4px; padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.result-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.result-value { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+
+.result-delta { font-size: 13px; font-weight: 600; }
+
+.result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--border-light); }
+
+.result-key { font-size: 11px; color: var(--text-muted); }
+
+.result-val { font-size: 12px; color: var(--text-secondary); }
+
+.disclaimer { font-size: 10px; color: var(--text-muted); margin-top: auto; line-height: 1.5; }
+
+.chart-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 20px; }
+
+.chart-title { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.badge--high   { background: #3d1a1a; color: var(--accent-danger); }
+.badge--medium { background: #3d2e00; color: var(--accent-warn); }
+.badge--low    { background: var(--accent-dim); color: var(--accent); }
