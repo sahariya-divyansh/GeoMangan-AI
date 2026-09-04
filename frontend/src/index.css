@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #0d1117;
+  --bg-panel: #161b22;
+  --bg-card: #1c2128;
+  --border: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+  --accent: #2ea043;
+  --accent-dim: #1a3a27;
+  --accent-warn: #d29922;
+  --accent-danger: #da3633;
+  --sidebar-width: 200px;
+  --header-height: 48px;
+
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  color: var(--text-primary);
+  background: var(--bg-base);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+  background: var(--bg-base);
+}
