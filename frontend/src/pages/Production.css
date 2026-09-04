@@ -30,3 +30,10 @@
 .badge--low    { background: var(--accent-dim); color: var(--accent); }
 
 .reason { font-size: 11px; max-width: 280px; line-height: 1.5; }
+
+.chart-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+}
