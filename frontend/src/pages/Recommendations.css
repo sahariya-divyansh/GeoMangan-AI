@@ -1,0 +1,55 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+
+.page-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+
+.page-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+
+.page-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.summary-bar { display: flex; gap: 16px; }
+
+.summary-item { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 3px; border: 1px solid var(--border); }
+
+.summary-item.pending  { color: var(--accent-warn); }
+.summary-item.approved { color: var(--accent); }
+.summary-item.rejected { color: var(--accent-danger); }
+
+.rec-list { display: flex; flex-direction: column; gap: 12px; }
+
+.rec-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.rec-card--high   { border-left-color: var(--accent-danger); }
+.rec-card--medium { border-left-color: var(--accent-warn); }
+.rec-card--low    { border-left-color: var(--accent); }
+
+.rec-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+.rec-mine { font-size: 11px; color: var(--text-muted); }
+
+.rec-status { margin-left: auto; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+
+.status--pending  { color: var(--accent-warn); }
+.status--approved { color: var(--accent); }
+.status--rejected { color: var(--accent-danger); }
+
+.rec-title  { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.rec-reason { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.6; }
+.rec-recovery { font-size: 11px; color: var(--accent); margin-bottom: 12px; }
+
+.rec-actions { display: flex; gap: 8px; }
+
+.btn { padding: 6px 16px; border-radius: 3px; border: 1px solid; font-size: 11px; font-weight: 600; cursor: pointer; }
+
+.btn--approve { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.btn--reject  { background: transparent; border-color: var(--border); color: var(--text-secondary); }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.badge--high   { background: #3d1a1a; color: var(--accent-danger); }
+.badge--medium { background: #3d2e00; color: var(--accent-warn); }
+.badge--low    { background: var(--accent-dim); color: var(--accent); }

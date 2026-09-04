@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Mines from './pages/Mines'
 import Exploration from './pages/Exploration'
 import Production from './pages/Production'
+import Recommendations from './pages/Recommendations'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="mines"       element={<Mines />} />
         <Route path="exploration" element={<Exploration />} />
         <Route path="production" element={<Production />} />
+        <Route path="recommendations" element={<Recommendations />} />
       </Route>
     </Routes>
   )
