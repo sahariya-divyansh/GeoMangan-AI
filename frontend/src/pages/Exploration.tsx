@@ -1,5 +1,13 @@
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { prospectivityZones } from '../data/synthetic'
+import 'leaflet/dist/leaflet.css'
 import './Exploration.css'
+
+function getColor(score: number) {
+  if (score > 80) return '#2ea043'
+  if (score > 60) return '#d29922'
+  return '#da3633'
+}
 
 export default function Exploration() {
   return (
@@ -7,6 +15,40 @@ export default function Exploration() {
       <div className="page-header">
         <h1 className="page-title">Exploration</h1>
         <p className="page-desc">Prospectivity scores from satellite spectral indicators</p>
+      </div>
+
+      <div className="map-wrapper">
+        <MapContainer
+          center={[21.7, 79.9]}
+          zoom={8}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="OpenStreetMap"
+          />
+          {prospectivityZones.map(z => (
+            <CircleMarker
+              key={z.id}
+              center={[z.lat, z.lng]}
+              radius={14}
+              pathOptions={{
+                color: getColor(z.score),
+                fillColor: getColor(z.score),
+                fillOpacity: 0.5
+              }}
+            >
+              <Popup>
+                <div style={{ fontSize: 12, lineHeight: 1.6 }}>
+                  <strong>{z.id}</strong><br />
+                  Score: {z.score}<br />
+                  Confidence: {z.confidence}<br />
+                  Action: {z.action}
+                </div>
+              </Popup>
+            </CircleMarker>
+          ))}
+        </MapContainer>
       </div>
 
       <table className="table">
@@ -33,10 +75,7 @@ export default function Exploration() {
                       className="score-fill"
                       style={{
                         width: `${z.score}%`,
-                        background:
-                          z.score > 80 ? 'var(--accent)' :
-                          z.score > 60 ? 'var(--accent-warn)' :
-                          'var(--accent-danger)'
+                        background: getColor(z.score)
                       }}
                     />
                   </div>

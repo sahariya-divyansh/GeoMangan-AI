@@ -40,3 +40,10 @@
   border: 1px solid var(--border); border-radius: 4px;
   padding: 10px 14px; line-height: 1.6;
 }
+
+.map-wrapper {
+  height: 340px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
