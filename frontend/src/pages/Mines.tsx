@@ -1,70 +1,60 @@
-import { mines } from '../data/synthetic'
+import { useEffect, useState } from 'react'
+import { api } from '../services/api'
 import type { Mine } from '../types'
 import './Mines.css'
 
-const formatTonnes = (value: number) => value.toLocaleString('en-IN')
-
-const getVarianceClass = (variance: number) =>
-  variance >= 0 ? 'mines-table__variance--positive' : 'mines-table__variance--negative'
-
-const getRiskClass = (risk: Mine['risk']) => {
-  const riskClassMap: Record<Mine['risk'], string> = {
-    High: 'mines-table__risk--high',
-    Medium: 'mines-table__risk--medium',
-    Low: 'mines-table__risk--low',
-  }
-
-  return riskClassMap[risk]
-}
-
 export default function Mines() {
+  const [mines, setMines] = useState<Mine[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.getMines()
+      .then((data) => setMines(data as Mine[]))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <p style={{ color: 'var(--text-muted)', padding: 24 }}>Loading...</p>
+
   return (
-    <section className="mines-page">
-      <div className="mines-page__header">
-        <h2>Mines</h2>
-        <p>Production performance across active manganese operations</p>
+    <div className="page">
+      <div className="page-header">
+        <h1 className="page-title">Mines</h1>
+        <p className="page-desc">Active mine sites with current production status</p>
       </div>
 
-      <div className="mines-table-wrap">
-        <table className="mines-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Mine</th>
-              <th>State</th>
-              <th>Target (t)</th>
-              <th>Actual (t)</th>
-              <th>Variance</th>
-              <th>Risk</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mines.map((mine: Mine) => {
-              const variance = mine.actual - mine.monthlyTarget
-              const varianceSign = variance >= 0 ? '+' : '-'
-
-              return (
-                <tr key={mine.id}>
-                  <td>{mine.id}</td>
-                  <td>{mine.name}</td>
-                  <td>{mine.state}</td>
-                  <td>{formatTonnes(mine.monthlyTarget)}</td>
-                  <td>{formatTonnes(mine.actual)}</td>
-                  <td className={getVarianceClass(variance)}>
-                    {varianceSign}
-                    {formatTonnes(Math.abs(variance))}
-                  </td>
-                  <td>
-                    <span className={`mines-table__risk ${getRiskClass(mine.risk)}`}>
-                      {mine.risk}
-                    </span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </section>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Mine</th>
+            <th>State</th>
+            <th>Target (t)</th>
+            <th>Actual (t)</th>
+            <th>Variance</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mines.map(m => {
+            const variance = m.actual - m.monthlyTarget
+            return (
+              <tr key={m.id}>
+                <td className="muted">{m.id}</td>
+                <td className="bold">{m.name}</td>
+                <td>{m.state}</td>
+                <td>{m.monthlyTarget.toLocaleString()}</td>
+                <td>{m.actual.toLocaleString()}</td>
+                <td className={variance >= 0 ? 'positive' : 'negative'}>
+                  {variance >= 0 ? '+' : ''}{variance.toLocaleString()}
+                </td>
+                <td>
+                  <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }
