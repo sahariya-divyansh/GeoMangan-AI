@@ -957,3 +957,23 @@ GeoMangan-AI is a software prototype and decision-support platform.
 Its predictions, prospectivity scores, forecasts, and recommendations are model-generated outputs and should not be interpreted as certified geological reserves, guaranteed production forecasts, or autonomous operational instructions.
 
 Real-world deployment requires validated data, domain-expert review, appropriate engineering validation, security controls, and integration with authorised mining systems.
+
+---
+
+## Deployment
+
+### Backend (Render)
+1. Go to [render.com](https://render.com), create a **New Web Service**.
+2. Connect your GitHub repository.
+3. Set **Root Directory**: `backend`
+4. Set **Build Command**: `pip install -r requirements.txt`
+5. Set **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+6. Add Environment Variable: `DATABASE_URL=sqlite:///./geomangan.db`
+
+### Frontend (Vercel)
+1. Go to [vercel.com](https://vercel.com), create a **New Project**.
+2. Connect your GitHub repository.
+3. Set **Root Directory**: `frontend`
+4. Add Environment Variable: `VITE_API_URL=https://your-backend.onrender.com`
+5. Click **Deploy**.
+
