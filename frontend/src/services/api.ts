@@ -1,3 +1,5 @@
+import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult } from '../types'
+
 const BASE = 'http://localhost:8000'
 
 async function get<T>(path: string): Promise<T> {
@@ -29,7 +31,7 @@ export const api = {
   getMines:           () => get<any[]>('/api/mines').then(data => data.map(mapMine)),
   getMine:            (id: string) => get<any>(`/api/mines/${id}`).then(mapMine),
   getZones:           () => get<any[]>('/api/exploration').then(data => data.map((z: any) => ({ ...z, mineId: z.mine_id, ironIndex: z.iron_index }))),
-  getForecasts:       () => get('/api/production'),
-  getRecommendations: () => get('/api/recommendations'),
-  simulate:           (body: unknown) => post('/api/whatif', body),
-}
+  getForecasts:       () => get<ForecastRow[]>('/api/production'),
+  getRecommendations: () => get<Recommendation[]>('/api/recommendations'),
+  simulate:           (body: WhatIfInput) => post<WhatIfResult>('/api/whatif', body),
+}

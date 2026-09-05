@@ -1,10 +1,27 @@
-import { useState } from 'react'
-import { recommendations as initialRecs } from '../data/synthetic'
+import { useState, useEffect } from 'react'
+import { api } from '../services/api'
 import type { Recommendation } from '../types'
 import './Recommendations.css'
 
 export default function Recommendations() {
-  const [recs, setRecs] = useState<Recommendation[]>(initialRecs)
+  const [recs, setRecs] = useState<Recommendation[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.getRecommendations()
+      .then(data => setRecs(data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="page">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
 
   const pending  = recs.filter(r => r.status === 'Pending').length
   const approved = recs.filter(r => r.status === 'Approved').length

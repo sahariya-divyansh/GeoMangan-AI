@@ -1,13 +1,34 @@
+import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts'
-import { forecastRows } from '../data/synthetic'
+import { api } from '../services/api'
+import type { ForecastRow } from '../types'
 import './Production.css'
 
 export default function Production() {
+  const [forecastRows, setForecastRows] = useState<ForecastRow[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.getForecasts()
+      .then(data => setForecastRows(data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="page">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
   const chartData = forecastRows.map(f => ({
     mine: f.mine.replace(' Mine', ''),
     Target: f.target,
     Forecast: f.d30,
   }))
+
 
   return (
     <div className="page">

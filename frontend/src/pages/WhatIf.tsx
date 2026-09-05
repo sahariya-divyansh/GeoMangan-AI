@@ -1,18 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { api } from '../services/api'
+import type { WhatIfResult } from '../types'
 import './WhatIf.css'
-
-const BASELINE = 16800
-
-function computePredicted(rain: number, downtime: number, blast: number, trucks: number) {
-  return Math.round(
-    BASELINE
-    - (rain - 12) * 80
-    - (downtime - 4.5) * 200
-    - (blast - 1) * 150
-    + trucks * 900
-  )
-}
 
 export default function WhatIf() {
   const [rain,     setRain]     = useState(12)
@@ -20,16 +10,28 @@ export default function WhatIf() {
   const [blast,    setBlast]    = useState(1)
   const [trucks,   setTrucks]   = useState(0)
 
-  const predicted = computePredicted(rain, downtime, blast, trucks)
-  const delta     = predicted - BASELINE
-  const risk      = predicted < 14000 ? 'High' : predicted < 16000 ? 'Medium' : 'Low'
+  const [result, setResult] = useState<WhatIfResult>({
+    baseline: 16800,
+    predicted: 16800,
+    delta: 0,
+    risk: 'Low'
+  })
+
+  useEffect(() => {
+    api.simulate({ rain, downtime, blast, trucks })
+      .then(res => setResult(res))
+      .catch(err => console.error(err))
+  }, [rain, downtime, blast, trucks])
+
+  const { baseline, predicted, delta, risk } = result
 
   const chartData = [
-    { week: 'W1', Baseline: 4200, Predicted: Math.round(predicted * 0.24) },
-    { week: 'W2', Baseline: 4200, Predicted: Math.round(predicted * 0.25) },
-    { week: 'W3', Baseline: 4200, Predicted: Math.round(predicted * 0.26) },
-    { week: 'W4', Baseline: 4200, Predicted: Math.round(predicted * 0.25) },
+    { week: 'W1', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.24) },
+    { week: 'W2', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.25) },
+    { week: 'W3', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.26) },
+    { week: 'W4', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.25) },
   ]
+
 
   return (
     <div className="page">
@@ -89,7 +91,7 @@ export default function WhatIf() {
           </div>
           <div className="result-row">
             <span className="result-key">Baseline</span>
-            <span className="result-val">{BASELINE.toLocaleString()} t</span>
+            <span className="result-val">{baseline.toLocaleString()} t</span>
           </div>
           <p className="disclaimer">Rule-based estimate for planning reference only. Not a certified forecast.</p>
         </div>

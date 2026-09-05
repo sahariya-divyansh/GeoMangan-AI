@@ -40,3 +40,18 @@ export interface Recommendation {
   recovery: string
   status: 'Pending' | 'Approved' | 'Rejected'
 }
+
+export interface WhatIfInput {
+  rain: number
+  downtime: number
+  blast: number
+  trucks: number
+}
+
+export interface WhatIfResult {
+  baseline: number
+  predicted: number
+  delta: number
+  risk: string
+}
+
