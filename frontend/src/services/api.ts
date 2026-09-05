@@ -1,4 +1,4 @@
-import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult } from '../types'
+import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult, DiagnosisResult } from '../types'
 
 const BASE = 'http://localhost:8000'
 
@@ -35,4 +35,6 @@ export const api = {
   getRecommendations: () => get<Recommendation[]>('/api/recommendations'),
   simulate:           (body: WhatIfInput) => post<WhatIfResult>('/api/whatif', body),
   explainZone:        (body: unknown) => post<{ feature: string; impact: number }[]>('/api/predict/explain', body),
-}
+  diagnose:           (body: unknown) => post<DiagnosisResult>('/api/production/diagnose', body),
+}
+

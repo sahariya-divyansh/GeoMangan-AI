@@ -55,3 +55,14 @@ export interface WhatIfResult {
   risk: string
 }
 
+export interface DiagnosisResult {
+  primary_reason: string
+  primary_contribution: number
+  secondary_reason: string | null
+  secondary_contribution: number | null
+  shortfall_probability: number
+  shortfall_tonnes: number
+  suggested_action: string
+}
+
+

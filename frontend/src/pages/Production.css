@@ -57,3 +57,132 @@
 .badge--low    { background: #dcfce7; color: #16a34a; }
 
 .reason { font-size: 12px; max-width: 280px; line-height: 1.5; color: var(--text-secondary); }
+
+.btn-diagnose {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 4px 12px;
+  border-radius: var(--radius-btn);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.btn-diagnose:hover {
+  background: #f1f5f9;
+  border-color: var(--accent);
+}
+
+.btn-diagnose--active {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.diag-row td {
+  padding: 0 !important;
+  background: #f8fafc;
+}
+
+.diag-panel {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.diag-loading {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 12px;
+}
+
+.diag-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  font-size: 12px;
+}
+
+.diag-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+}
+
+.diag-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.diag-prob {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent-danger);
+  line-height: 1.1;
+}
+
+.diag-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.diag-causes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+}
+
+.diag-cause-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diag-cause-label {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.diag-cause-val {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.diag-cause-pct {
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.diag-action {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.diag-action-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.diag-action-text {
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.4;
+}

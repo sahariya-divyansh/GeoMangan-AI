@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from app.schemas.production import ForecastSchema
+from app.schemas.diagnosis import DiagnosisInput, DiagnosisResult
+from app.services.diagnosis import diagnose
 from typing import List
 
 router = APIRouter(prefix="/api/production", tags=["Production"])
@@ -15,3 +17,15 @@ FORECASTS = [
 @router.get("/", response_model=List[ForecastSchema])
 def get_forecasts():
     return FORECASTS
+
+@router.post("/diagnose", response_model=DiagnosisResult)
+def diagnose_endpoint(data: DiagnosisInput):
+    return diagnose(
+        equipment_availability=data.equipment_availability,
+        rainfall_24h=data.rainfall_24h,
+        blasting_delay=data.blasting_delay,
+        predicted_grade=data.predicted_grade,
+        target_grade=data.target_grade,
+        predicted=data.predicted,
+        target=data.target
+    )
