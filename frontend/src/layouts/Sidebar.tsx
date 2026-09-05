@@ -6,7 +6,10 @@ import {
   Lightbulb,
   SlidersHorizontal,
   LayoutDashboard,
+  Pickaxe,
+  X,
 } from 'lucide-react'
+import './Sidebar.css'
 
 const navigation = [
   { name: 'Dashboard',        path: '/dashboard',       icon: LayoutDashboard },
@@ -17,27 +20,41 @@ const navigation = [
   { name: 'What-if Simulator',path: '/whatif',           icon: SlidersHorizontal },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-950 text-white">
-      <div className="border-b border-slate-800 px-6 py-5">
-        <h1 className="text-xl font-semibold tracking-tight">GeoMangan-AI</h1>
-        <p className="mt-1 text-xs text-slate-400">Mining Intelligence Platform</p>
+    <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
+      <div className="sidebar__header">
+        <div className="sidebar__brand">
+          <div className="sidebar__logo-icon">
+            <Pickaxe size={20} />
+          </div>
+          <div>
+            <h1 className="sidebar__title">GeoMangan-AI</h1>
+            <p className="sidebar__subtitle">Mining Intelligence Platform</p>
+          </div>
+        </div>
+        {onClose && (
+          <button className="sidebar__close-btn" onClick={onClose} aria-label="Close sidebar">
+            <X size={18} />
+          </button>
+        )}
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-5">
+      <nav className="sidebar__nav">
         {navigation.map((item) => {
           const Icon = item.icon
           return (
             <NavLink
               key={item.name}
               to={item.path}
+              onClick={onClose}
               className={({ isActive }) =>
-                `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-                  isActive
-                    ? 'bg-slate-800 text-white font-medium'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`
+                `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
               }
             >
               <Icon size={18} />
@@ -47,9 +64,9 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-slate-800 px-6 py-4">
-        <p className="text-xs text-slate-500">Decision Support System</p>
-        <p className="text-xs text-yellow-600 mt-1">Synthetic data mode</p>
+      <div className="sidebar__footer">
+        <p className="sidebar__footer-title">Decision Support System</p>
+        <span className="sidebar__mode-badge">Synthetic data mode</span>
       </div>
     </aside>
   )

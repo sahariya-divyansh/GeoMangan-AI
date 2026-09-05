@@ -43,43 +43,46 @@ export default function Production() {
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
             <XAxis dataKey="mine" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', fontSize: 11 }} />
+            <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }} />
             <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Bar dataKey="Target"   fill="#30363d" radius={[3,3,0,0]} />
-            <Bar dataKey="Forecast" fill="#2ea043" radius={[3,3,0,0]} />
+            <Bar dataKey="Target"   fill="#cbd5e1" radius={[4,4,0,0]} />
+            <Bar dataKey="Forecast" fill="#16a34a" radius={[4,4,0,0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Mine</th>
-            <th>Monthly Target</th>
-            <th>7-Day</th>
-            <th>30-Day</th>
-            <th>90-Day</th>
-            <th>Risk</th>
-            <th>Primary Cause</th>
-          </tr>
-        </thead>
-        <tbody>
-          {forecastRows.map(f => {
-            const shortfall = f.d30 < f.target
-            return (
-              <tr key={f.mine}>
-                <td className="bold">{f.mine}</td>
-                <td>{f.target.toLocaleString()}</td>
-                <td>{f.d7.toLocaleString()}</td>
-                <td className={shortfall ? 'negative' : 'positive'}>{f.d30.toLocaleString()}</td>
-                <td>{f.d90.toLocaleString()}</td>
-                <td><span className={`badge badge--${f.risk.toLowerCase()}`}>{f.risk}</span></td>
-                <td className="reason">{f.reason}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Mine</th>
+              <th>Monthly Target</th>
+              <th>7-Day</th>
+              <th>30-Day</th>
+              <th>90-Day</th>
+              <th>Risk</th>
+              <th>Primary Cause</th>
+            </tr>
+          </thead>
+          <tbody>
+            {forecastRows.map(f => {
+              const shortfall = f.d30 < f.target
+              return (
+                <tr key={f.mine}>
+                  <td className="bold">{f.mine}</td>
+                  <td>{f.target.toLocaleString()}</td>
+                  <td>{f.d7.toLocaleString()}</td>
+                  <td className={shortfall ? 'negative' : 'positive'}>{f.d30.toLocaleString()}</td>
+                  <td>{f.d90.toLocaleString()}</td>
+                  <td><span className={`badge badge--${f.risk.toLowerCase()}`}>{f.risk}</span></td>
+                  <td className="reason">{f.reason}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   )
 }

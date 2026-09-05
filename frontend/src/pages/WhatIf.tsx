@@ -104,11 +104,11 @@ export default function WhatIf() {
             <XAxis dataKey="week" stroke="var(--text-muted)" fontSize={11} />
             <YAxis stroke="var(--text-muted)" fontSize={11} />
             <Tooltip
-              contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', fontSize: 11 }}
+              contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }}
             />
             <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Area type="monotone" dataKey="Baseline"  stroke="#30363d" fill="#30363d" fillOpacity={0.3} />
-            <Area type="monotone" dataKey="Predicted" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.2} />
+            <Area type="monotone" dataKey="Baseline"  stroke="#94a3b8" fill="#e2e8f0" fillOpacity={0.5} />
+            <Area type="monotone" dataKey="Predicted" stroke="#16a34a" fill="#16a34a" fillOpacity={0.2} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

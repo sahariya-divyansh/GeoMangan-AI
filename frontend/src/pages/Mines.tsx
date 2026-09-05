@@ -22,39 +22,42 @@ export default function Mines() {
         <p className="page-desc">Active mine sites with current production status</p>
       </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Mine</th>
-            <th>State</th>
-            <th>Target (t)</th>
-            <th>Actual (t)</th>
-            <th>Variance</th>
-            <th>Risk</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mines.map(m => {
-            const variance = m.actual - m.monthlyTarget
-            return (
-              <tr key={m.id}>
-                <td className="muted">{m.id}</td>
-                <td className="bold">{m.name}</td>
-                <td>{m.state}</td>
-                <td>{m.monthlyTarget.toLocaleString()}</td>
-                <td>{m.actual.toLocaleString()}</td>
-                <td className={variance >= 0 ? 'positive' : 'negative'}>
-                  {variance >= 0 ? '+' : ''}{variance.toLocaleString()}
-                </td>
-                <td>
-                  <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Mine</th>
+              <th>State</th>
+              <th>Target (t)</th>
+              <th>Actual (t)</th>
+              <th>Variance</th>
+              <th>Risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mines.map(m => {
+              const variance = m.actual - m.monthlyTarget
+              return (
+                <tr key={m.id}>
+                  <td className="muted">{m.id}</td>
+                  <td className="bold">{m.name}</td>
+                  <td>{m.state}</td>
+                  <td>{m.monthlyTarget.toLocaleString()}</td>
+                  <td>{m.actual.toLocaleString()}</td>
+                  <td className={variance >= 0 ? 'positive' : 'negative'}>
+                    {variance >= 0 ? '+' : ''}{variance.toLocaleString()}
+                  </td>
+                  <td>
+                    <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   )
 }

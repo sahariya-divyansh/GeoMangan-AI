@@ -102,14 +102,14 @@ export default function Dashboard() {
             <Line
               type="monotone"
               dataKey="Target"
-              stroke="#30363d"
+              stroke="#94a3b8"
               strokeWidth={2}
               dot={false}
             />
             <Line
               type="monotone"
               dataKey="Actual"
-              stroke="#2ea043"
+              stroke="#16a34a"
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}

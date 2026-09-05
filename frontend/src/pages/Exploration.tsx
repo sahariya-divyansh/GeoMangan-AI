@@ -87,83 +87,86 @@ export default function Exploration() {
         </MapContainer>
       </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Zone ID</th>
-            <th>Mine ID</th>
-            <th>Score</th>
-            <th>Confidence</th>
-            <th>NDVI</th>
-            <th>Iron Index</th>
-            <th>Recommended Action</th>
-            <th>Explainability</th>
-          </tr>
-        </thead>
-        <tbody>
-          {zones.map(z => {
-            const isExpanded = expandedZoneId === z.id
-            const isLoading = loadingExplain[z.id]
-            const factors = explanations[z.id]
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Zone ID</th>
+              <th>Mine ID</th>
+              <th>Score</th>
+              <th>Confidence</th>
+              <th>NDVI</th>
+              <th>Iron Index</th>
+              <th>Recommended Action</th>
+              <th>Explainability</th>
+            </tr>
+          </thead>
+          <tbody>
+            {zones.map(z => {
+              const isExpanded = expandedZoneId === z.id
+              const isLoading = loadingExplain[z.id]
+              const factors = explanations[z.id]
 
-            return (
-              <>
-                <tr key={z.id}>
-                  <td className="muted">{z.id}</td>
-                  <td>{z.mineId}</td>
-                  <td>
-                    <div className="score-cell">
-                      <div className="score-bar">
-                        <div className="score-fill" style={{ width: `${z.score}%`, background: getColor(z.score) }} />
-                      </div>
-                      <span>{z.score}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`badge badge--${z.confidence.toLowerCase()}`}>{z.confidence}</span>
-                  </td>
-                  <td>{z.ndvi}</td>
-                  <td>{z.ironIndex}</td>
-                  <td className="action-cell">{z.action}</td>
-                  <td>
-                    <button
-                      className={`btn-explain ${isExpanded ? 'btn-explain--active' : ''}`}
-                      onClick={() => handleExplain(z)}
-                    >
-                      {isExpanded ? 'Hide' : 'Explain'}
-                    </button>
-                  </td>
-                </tr>
-                {isExpanded && (
-                  <tr key={`${z.id}-explain`} className="explain-row">
-                    <td colSpan={8}>
-                      <div className="explain-panel">
-                        <span className="explain-title">Top 3 Contributing Factors (SHAP AI):</span>
-                        {isLoading ? (
-                          <span className="explain-loading">Calculating SHAP impact values...</span>
-                        ) : factors && factors.length > 0 ? (
-                          <div className="explain-factors">
-                            {factors.map((item, idx) => (
-                              <span key={idx} className="factor-tag">
-                                <span className="factor-name">{item.feature}</span>
-                                <span className={`factor-val ${item.impact >= 0 ? 'pos' : 'neg'}`}>
-                                  {item.impact >= 0 ? `+${item.impact}` : item.impact}
-                                </span>
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="explain-loading">No feature impacts available</span>
-                        )}
+              return (
+                <>
+                  <tr key={z.id}>
+                    <td className="muted">{z.id}</td>
+                    <td>{z.mineId}</td>
+                    <td>
+                      <div className="score-cell">
+                        <div className="score-bar">
+                          <div className="score-fill" style={{ width: `${z.score}%`, background: getColor(z.score) }} />
+                        </div>
+                        <span>{z.score}</span>
                       </div>
                     </td>
+                    <td>
+                      <span className={`badge badge--${z.confidence.toLowerCase()}`}>{z.confidence}</span>
+                    </td>
+                    <td>{z.ndvi}</td>
+                    <td>{z.ironIndex}</td>
+                    <td className="action-cell">{z.action}</td>
+                    <td>
+                      <button
+                        className={`btn-explain ${isExpanded ? 'btn-explain--active' : ''}`}
+                        onClick={() => handleExplain(z)}
+                      >
+                        {isExpanded ? 'Hide' : 'Explain'}
+                      </button>
+                    </td>
                   </tr>
-                )}
-              </>
-            )
-          })}
-        </tbody>
-      </table>
+                  {isExpanded && (
+                    <tr key={`${z.id}-explain`} className="explain-row">
+                      <td colSpan={8}>
+                        <div className="explain-panel">
+                          <span className="explain-title">Top 3 Contributing Factors (SHAP AI):</span>
+                          {isLoading ? (
+                            <span className="explain-loading">Calculating SHAP impact values...</span>
+                          ) : factors && factors.length > 0 ? (
+                            <div className="explain-factors">
+                              {factors.map((item, idx) => (
+                                <span key={idx} className="factor-tag">
+                                  <span className="factor-name">{item.feature}</span>
+                                  <span className={`factor-val ${item.impact >= 0 ? 'pos' : 'neg'}`}>
+                                    {item.impact >= 0 ? `+${item.impact}` : item.impact}
+                                  </span>
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="explain-loading">No feature impacts available</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
 
       <p className="disclaimer">
         Prospectivity scores are exploration-prioritization estimates derived from
