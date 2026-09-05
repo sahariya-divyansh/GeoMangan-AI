@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import mines, exploration, production, recommendations, whatif, predict, weather
+from app.db.init_db import init_db
+from app.db.seed import seed_db
 
 app = FastAPI(
     title="GeoMangan-AI API",
@@ -16,10 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-from app.db.init_db import init_db
-from app.db.seed import seed_db
-
 app.include_router(mines.router)
 app.include_router(exploration.router)
 app.include_router(production.router)
@@ -33,13 +31,11 @@ async def startup():
     init_db()
     seed_db()
 
-
-
-
 @app.get("/")
 def root():
     return {"status": "operational", "version": "0.1.0"}
 
 @app.get("/health")
+@app.head("/health")
 def health():
     return {"status": "ok"}
