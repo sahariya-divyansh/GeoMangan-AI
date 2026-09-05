@@ -1,9 +1,12 @@
 fastapi
 uvicorn
 sqlalchemy
+psycopg2-binary
+geoalchemy2
+alembic
 python-dotenv
 pandas
 numpy
 scikit-learn
 shap
-httpx
+httpx

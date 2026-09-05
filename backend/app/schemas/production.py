@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 
 class ForecastSchema(BaseModel):
@@ -9,6 +9,8 @@ class ForecastSchema(BaseModel):
     d90: int
     risk: str
     reason: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 class LSTMInput(BaseModel):
     equipment_availability: float

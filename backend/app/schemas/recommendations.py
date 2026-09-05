@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Literal
 
 class RecommendationSchema(BaseModel):
@@ -9,3 +9,5 @@ class RecommendationSchema(BaseModel):
     reason: str
     recovery: str
     status: Literal['Pending', 'Approved', 'Rejected']
+
+    model_config = ConfigDict(from_attributes=True)

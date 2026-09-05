@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Literal
 
 class ZoneSchema(BaseModel):
@@ -11,3 +11,5 @@ class ZoneSchema(BaseModel):
     ndvi: float
     iron_index: float
     action: str
+
+    model_config = ConfigDict(from_attributes=True)

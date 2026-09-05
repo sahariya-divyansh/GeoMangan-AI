@@ -1,18 +1,21 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from app.schemas.weather import WeatherResult
 from app.services.weather import fetch_weather
-from app.api.mines import MINES
+from app.db.base import get_db
+from app.db.models import Mine
 
 router = APIRouter(prefix="/api/weather", tags=["Weather"])
 
 @router.get("/{mine_id}", response_model=WeatherResult)
-async def get_weather(mine_id: str):
+async def get_weather(mine_id: str, db: Session = Depends(get_db)):
+    mines = db.query(Mine).all()
     target_mine = None
-    for mine in MINES:
+    for mine in mines:
         if mine.id == mine_id or mine.id == f"mn-{mine_id}" or mine.id.replace("mn-", "") == mine_id:
             target_mine = mine
             break
-            
+
     if not target_mine:
         raise HTTPException(status_code=404, detail="Mine not found")
 

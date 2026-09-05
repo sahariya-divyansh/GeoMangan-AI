@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Literal
 
 class MineSchema(BaseModel):
@@ -10,3 +10,5 @@ class MineSchema(BaseModel):
     monthly_target: int
     actual: int
     risk: Literal['High', 'Medium', 'Low']
+
+    model_config = ConfigDict(from_attributes=True)
