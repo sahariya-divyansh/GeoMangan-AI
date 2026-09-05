@@ -47,3 +47,79 @@
   border-radius: 4px;
   overflow: hidden;
 }
+
+.btn-explain {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-explain:hover {
+  background: var(--bg-panel);
+  border-color: var(--accent);
+}
+
+.btn-explain--active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.explain-row td {
+  padding: 0 !important;
+  background: var(--bg-panel);
+}
+
+.explain-panel {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+}
+
+.explain-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.explain-loading {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.explain-factors {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.factor-tag {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: flex;
+  gap: 6px;
+}
+
+.factor-name {
+  color: var(--text-secondary);
+}
+
+.factor-val {
+  font-weight: 600;
+}
+
+.factor-val.pos {
+  color: var(--accent);
+}
+
+.factor-val.neg {
+  color: var(--accent-danger);
+}

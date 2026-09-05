@@ -1,0 +1,6 @@
+hole_id,mine_id,depth_m,mn_grade_pct,fe_grade_pct,si_grade_pct,lithology
+dh-bal-01,mn-balaghat,120.5,44.2,6.8,11.4,Manganese Ore
+dh-bal-02,mn-balaghat,145.0,38.5,8.2,14.1,Schist
+dh-knd-01,mn-kandri,95.2,48.1,5.1,9.8,High-Grade Oxide
+dh-ukw-01,mn-ukwa,110.0,41.0,7.3,12.5,Manganese Ore
+dh-tir-01,mn-tirodi,130.8,36.4,9.0,15.2,Quartzite Contact

@@ -1,0 +1,6 @@
+equipment_id,mine_id,type,operating_hours,temperature,vibration,maintenance_interval,is_anomaly
+eq-ex-101,mn-balaghat,Excavator,8.5,76.2,2.4,240,False
+eq-ex-102,mn-balaghat,Excavator,21.5,108.4,8.1,520,True
+eq-ht-201,mn-kandri,Haul Truck,7.9,72.0,2.1,210,False
+eq-cr-301,mn-kandri,Crusher,14.2,96.5,6.8,480,True
+eq-dr-401,mn-ukwa,Drill Rig,6.8,69.5,1.9,180,False

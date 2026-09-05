@@ -34,4 +34,5 @@ export const api = {
   getForecasts:       () => get<ForecastRow[]>('/api/production'),
   getRecommendations: () => get<Recommendation[]>('/api/recommendations'),
   simulate:           (body: WhatIfInput) => post<WhatIfResult>('/api/whatif', body),
+  explainZone:        (body: unknown) => post<{ feature: string; impact: number }[]>('/api/predict/explain', body),
 }

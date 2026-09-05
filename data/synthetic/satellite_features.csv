@@ -1,0 +1,6 @@
+id,mine_id,lat,lng,score,confidence,ndvi,iron_index,slope,elevation,lineament_density,distance_to_deposit,action
+pz-balaghat-east,mn-balaghat,21.8239,80.1974,86,High,0.34,1.42,12.5,450.0,0.65,2.1,Prioritize infill drilling along eastern contact zone
+pz-ukwa-north,mn-ukwa,21.9862,80.4591,78,Medium,0.41,1.28,18.0,520.0,0.48,3.5,Run trench sampling before expanding bench plan
+pz-tirodi-southwest,mn-tirodi,21.6723,79.7046,73,Medium,0.29,1.19,15.2,380.0,0.52,4.2,Validate anomaly with ground magnetic traverse
+pz-kandri-west,mn-kandri,21.3975,79.3268,91,High,0.22,1.57,8.4,310.0,0.78,1.2,Schedule step-out drilling in low-vegetation corridor
+pz-munsar-deeps,mn-munsar,21.3794,79.3019,64,Low,0.48,1.08,22.1,290.0,0.35,5.8,Reprocess historical assay logs before field mobilization

@@ -376,7 +376,11 @@ lineament_density
 
 The datasets are intentionally structured so that future real-world data sources can replace the prototype datasets with minimal architectural changes.
 
+> **Note on Data Schema Integration:**
+> The synthetic CSV files located in `data/synthetic/` (`mines.csv`, `production.csv`, `equipment.csv`, `drill_samples.csv`, and `satellite_features.csv`) define the standardized data schemas for real MOIL (Manganese Ore India Limited) data integration and operational pipeline onboarding.
+
 ---
+
 
 # Exploration Model
 

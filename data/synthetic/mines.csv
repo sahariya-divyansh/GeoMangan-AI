@@ -1,0 +1,6 @@
+id,name,state,lat,lng,monthly_target,actual,risk
+mn-balaghat,Balaghat Mine,Madhya Pradesh,21.8239,80.1974,94000,91300,Medium
+mn-ukwa,Ukwa Mine,Madhya Pradesh,21.9862,80.4591,38500,40700,Low
+mn-tirodi,Tirodi Mine,Madhya Pradesh,21.6723,79.7046,46000,43800,Medium
+mn-kandri,Kandri Mine,Maharashtra,21.3975,79.3268,52500,48700,High
+mn-munsar,Munsar Mine,Maharashtra,21.3794,79.3019,61500,63200,Low
