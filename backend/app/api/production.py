@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from app.schemas.production import ForecastSchema
+from app.schemas.production import ForecastSchema, LSTMInput, LSTMResult
 from app.schemas.diagnosis import DiagnosisInput, DiagnosisResult
 from app.services.diagnosis import diagnose
+from app.ml.lstm_forecast import predict_lstm
 from typing import List
 
 router = APIRouter(prefix="/api/production", tags=["Production"])
@@ -28,4 +29,16 @@ def diagnose_endpoint(data: DiagnosisInput):
         target_grade=data.target_grade,
         predicted=data.predicted,
         target=data.target
+    )
+
+@router.post("/lstm-forecast", response_model=LSTMResult)
+def lstm_forecast_endpoint(data: LSTMInput):
+    return predict_lstm(
+        equipment_availability=data.equipment_availability,
+        rainfall=data.rainfall,
+        blast_delay=data.blast_delay,
+        ore_grade=data.ore_grade,
+        working_days=data.working_days,
+        prev_month_production=data.prev_month_production,
+        month=data.month
     )

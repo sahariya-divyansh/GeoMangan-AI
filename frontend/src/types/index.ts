@@ -65,4 +65,22 @@ export interface DiagnosisResult {
   suggested_action: string
 }
 
+export interface LSTMInput {
+  equipment_availability: number
+  rainfall: number
+  blast_delay: number
+  ore_grade: number
+  working_days: number
+  prev_month_production: number
+  month: number
+}
+
+export interface LSTMResult {
+  predicted: number
+  model_type: string
+  confidence_interval: [number, number]
+  risk: string
+}
+
+
 

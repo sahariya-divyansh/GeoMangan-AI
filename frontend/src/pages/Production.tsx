@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts'
 import { api } from '../services/api'
-import type { ForecastRow, DiagnosisResult } from '../types'
+import type { ForecastRow, DiagnosisResult, LSTMResult } from '../types'
 import './Production.css'
 
 const mineInputs: Record<string, { equipment: number; rainfall: number; blast: number; grade: number; target_grade: number }> = {
@@ -19,12 +19,34 @@ export default function Production() {
   const [diagnoses, setDiagnoses] = useState<Record<string, DiagnosisResult>>({})
   const [loadingDiag, setLoadingDiag] = useState<Record<string, boolean>>({})
 
+  const [selectedModel, setSelectedModel] = useState<'Random Forest' | 'LSTM-MLP'>('Random Forest')
+  const [lstmResult, setLstmResult] = useState<LSTMResult | null>(null)
+  const [loadingLstm, setLoadingLstm] = useState(false)
+
   useEffect(() => {
     api.getForecasts()
       .then(data => setForecastRows(data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (selectedModel === 'LSTM-MLP' && !lstmResult) {
+      setLoadingLstm(true)
+      api.lstmForecast({
+        equipment_availability: 0.82,
+        rainfall: 18,
+        blast_delay: 1.5,
+        ore_grade: 38,
+        working_days: 26,
+        prev_month_production: 90250,
+        month: new Date().getMonth() + 1,
+      })
+        .then(res => setLstmResult(res))
+        .catch(err => console.error(err))
+        .finally(() => setLoadingLstm(false))
+    }
+  }, [selectedModel, lstmResult])
 
   const handleDiagnose = (f: ForecastRow) => {
     if (expandedMine === f.mine) {
@@ -69,9 +91,25 @@ export default function Production() {
 
   return (
     <div className="page">
-      <div className="page-header">
-        <h1 className="page-title">Production</h1>
-        <p className="page-desc">Forecast vs target across 7, 30 and 90 day horizons</p>
+      <div className="page-header page-header--flex">
+        <div>
+          <h1 className="page-title">Production</h1>
+          <p className="page-desc">Forecast vs target across 7, 30 and 90 day horizons</p>
+        </div>
+        <div className="model-toggle">
+          <button
+            className={`btn-model ${selectedModel === 'Random Forest' ? 'btn-model--active' : ''}`}
+            onClick={() => setSelectedModel('Random Forest')}
+          >
+            Random Forest
+          </button>
+          <button
+            className={`btn-model ${selectedModel === 'LSTM-MLP' ? 'btn-model--active' : ''}`}
+            onClick={() => setSelectedModel('LSTM-MLP')}
+          >
+            LSTM-MLP
+          </button>
+        </div>
       </div>
 
       <div className="chart-box">
@@ -173,6 +211,44 @@ export default function Production() {
           </tbody>
         </table>
       </div>
+
+      {selectedModel === 'LSTM-MLP' && (
+        <div className="lstm-panel">
+          <div className="lstm-header">
+            <div>
+              <h3 className="lstm-title">LSTM-MLP Neural Network Forecast (Balaghat Mine Focus)</h3>
+              <p className="lstm-desc">Deep multi-layer perceptron neural network prediction with 95% confidence intervals</p>
+            </div>
+            <span className="badge badge--lstm">LSTM-MLP</span>
+          </div>
+
+          {loadingLstm ? (
+            <p className="lstm-loading">Running neural network time-series simulation...</p>
+          ) : lstmResult ? (
+            <div className="lstm-grid">
+              <div className="lstm-card">
+                <span className="lstm-label">Predicted Production</span>
+                <span className="lstm-value">{lstmResult.predicted.toLocaleString()} t</span>
+              </div>
+              <div className="lstm-card">
+                <span className="lstm-label">Confidence Interval (95% CI)</span>
+                <span className="lstm-ci">
+                  {lstmResult.confidence_interval[0].toLocaleString()} - {lstmResult.confidence_interval[1].toLocaleString()} t
+                </span>
+              </div>
+              <div className="lstm-card">
+                <span className="lstm-label">Operational Risk</span>
+                <span className={`badge badge--${lstmResult.risk.toLowerCase()}`}>
+                  {lstmResult.risk}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <p className="lstm-loading">No forecast data available</p>
+          )}
+        </div>
+      )}
     </div>
   )
-}
+}
+
