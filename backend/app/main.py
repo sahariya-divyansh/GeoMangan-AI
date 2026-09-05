@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import mines, exploration, production, recommendations, whatif
+from app.api import mines, exploration, production, recommendations, whatif, predict
 
 app = FastAPI(
     title="GeoMangan-AI API",
@@ -21,6 +21,8 @@ app.include_router(exploration.router)
 app.include_router(production.router)
 app.include_router(recommendations.router)
 app.include_router(whatif.router)
+app.include_router(predict.router)
+
 
 @app.get("/")
 def root():
