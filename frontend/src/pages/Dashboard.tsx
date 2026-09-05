@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   CartesianGrid,
   Line,
@@ -8,7 +9,8 @@ import {
   YAxis,
 } from 'recharts'
 import { mines } from '../data/synthetic'
-import type { Mine } from '../types'
+import { api } from '../services/api'
+import type { Mine, WeatherResult } from '../types'
 import './Dashboard.css'
 
 const monthlyData = [
@@ -26,6 +28,41 @@ const getTotal = (items: Mine[], field: 'monthlyTarget' | 'actual') =>
   items.reduce((total, mine) => total + mine[field], 0)
 
 export default function Dashboard() {
+  const [selectedMine, setSelectedMine] = useState<string>('mn-balaghat')
+  const [weather, setWeather] = useState<WeatherResult | null>(null)
+  const [weatherLoading, setWeatherLoading] = useState<boolean>(true)
+  const [weatherFallback, setWeatherFallback] = useState<boolean>(false)
+
+  useEffect(() => {
+    let isMounted = true
+    setWeatherLoading(true)
+    api
+      .getWeather(selectedMine)
+      .then((data) => {
+        if (isMounted) {
+          setWeather(data)
+          setWeatherFallback(false)
+          setWeatherLoading(false)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setWeather({
+            avg_rainfall_mm: 18,
+            avg_temperature_c: 28,
+            avg_humidity_pct: 72,
+            days_fetched: 7,
+            source: 'Cached Fallback',
+          })
+          setWeatherFallback(true)
+          setWeatherLoading(false)
+        }
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [selectedMine])
+
   const totalMines = mines.length
   const totalProduction = getTotal(mines, 'actual')
   const totalTarget = getTotal(mines, 'monthlyTarget')
@@ -75,6 +112,61 @@ export default function Dashboard() {
           </article>
         ))}
       </div>
+
+      <section className="dashboard__weather-panel" aria-label="Weather metrics">
+        <div className="weather-panel__header">
+          <div className="weather-panel__title-group">
+            <h3>Mine Site Weather (7-Day Average)</h3>
+            {weatherLoading ? (
+              <span className="weather-badge weather-badge--loading">Fetching weather...</span>
+            ) : weatherFallback ? (
+              <span className="weather-badge weather-badge--fallback">Weather data unavailable — using cached values</span>
+            ) : (
+              <span className="weather-badge weather-badge--live">Live — NASA POWER API</span>
+            )}
+          </div>
+          <div className="weather-panel__select-group">
+            <label htmlFor="weather-mine-select">Select Mine: </label>
+            <select
+              id="weather-mine-select"
+              value={selectedMine}
+              onChange={(e) => setSelectedMine(e.target.value)}
+              className="weather-select"
+            >
+              {mines.map((mine) => (
+                <option key={mine.id} value={mine.id}>
+                  {mine.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {weatherLoading ? (
+          <div className="weather-panel__loading">Loading weather telemetry...</div>
+        ) : weather ? (
+          <div className="weather-panel__cards">
+            <article className="weather-card">
+              <span className="weather-card__label">Avg Rainfall</span>
+              <strong className="weather-card__value">
+                {weather.avg_rainfall_mm} <small>mm</small>
+              </strong>
+            </article>
+            <article className="weather-card">
+              <span className="weather-card__label">Avg Temperature</span>
+              <strong className="weather-card__value">
+                {weather.avg_temperature_c} <small>°C</small>
+              </strong>
+            </article>
+            <article className="weather-card">
+              <span className="weather-card__label">Avg Humidity</span>
+              <strong className="weather-card__value">
+                {weather.avg_humidity_pct} <small>%</small>
+              </strong>
+            </article>
+          </div>
+        ) : null}
+      </section>
 
       <section className="dashboard__chart-panel" aria-label="Monthly production chart">
         <ResponsiveContainer width="100%" height={260}>

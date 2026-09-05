@@ -1,4 +1,4 @@
-import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult, DiagnosisResult, LSTMResult } from '../types'
+import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult, DiagnosisResult, LSTMResult, WeatherResult } from '../types'
 
 const BASE = 'http://localhost:8000'
 
@@ -37,6 +37,8 @@ export const api = {
   explainZone:        (body: unknown) => post<{ feature: string; impact: number }[]>('/api/predict/explain', body),
   diagnose:           (body: unknown) => post<DiagnosisResult>('/api/production/diagnose', body),
   lstmForecast:       (body: unknown) => post<LSTMResult>('/api/production/lstm-forecast', body),
+  getWeather:         (mineId: string) => get<WeatherResult>(`/api/weather/${mineId}`),
 }
+
 
 

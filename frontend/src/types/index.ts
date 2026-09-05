@@ -82,5 +82,14 @@ export interface LSTMResult {
   risk: string
 }
 
+export interface WeatherResult {
+  avg_rainfall_mm: number
+  avg_temperature_c: number
+  avg_humidity_pct: number
+  days_fetched: number
+  source: string
+}
+
+
 
 
