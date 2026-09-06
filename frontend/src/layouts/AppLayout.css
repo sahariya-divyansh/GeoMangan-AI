@@ -16,7 +16,6 @@
   flex: 1;
   min-width: 0;
   padding: 28px;
-  padding-bottom: calc(28px + 32px);
   overflow: auto;
   background: var(--bg-base);
   transition: padding 200ms ease;
@@ -35,7 +34,6 @@
 @media (max-width: 768px) {
   .app-layout__main {
     padding: 16px;
-    padding-bottom: calc(16px + 32px);
   }
 
   .sidebar-backdrop {

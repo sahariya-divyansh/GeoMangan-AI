@@ -61,7 +61,7 @@ html.dark .btn-export-report:hover {
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid var(--border);
-  background: var(--bg-panel, #ffffff);
+  background: var(--bg-card);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 16px 18px;
@@ -89,7 +89,7 @@ html.dark .btn-export-report:hover {
 
 .dashboard__weather-panel {
   border: 1px solid var(--border);
-  background: var(--bg-panel, #ffffff);
+  background: var(--bg-card);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 20px;
@@ -132,13 +132,23 @@ html.dark .btn-export-report:hover {
   color: #16a34a;
 }
 
+html.dark .weather-badge--live {
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+}
+
 .weather-badge--fallback {
   background: #fef3c7;
   color: #d97706;
 }
 
+html.dark .weather-badge--fallback {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+
 .weather-badge--loading {
-  background: var(--border-light, #f1f5f9);
+  background: var(--border-light);
   color: var(--text-secondary);
 }
 
@@ -154,7 +164,7 @@ html.dark .btn-export-report:hover {
   padding: 6px 12px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: var(--bg-card, #ffffff);
+  background: var(--bg-card);
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 500;
@@ -180,7 +190,7 @@ html.dark .btn-export-report:hover {
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--bg-base, #f8fafc);
+  background: var(--bg-base);
 }
 
 .weather-card__label {
@@ -203,7 +213,7 @@ html.dark .btn-export-report:hover {
 
 .dashboard__chart-panel {
   border: 1px solid var(--border);
-  background: var(--bg-panel, #ffffff);
+  background: var(--bg-card);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 20px;

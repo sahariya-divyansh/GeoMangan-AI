@@ -21,7 +21,7 @@
 }
 
 .mine-header-card {
-  background: var(--bg-panel, #ffffff);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   padding: 24px;
@@ -54,7 +54,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
-  border-top: 1px solid var(--border-light, #f1f5f9);
+  border-top: 1px solid var(--border-light);
   padding-top: 16px;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .detail-card {
-  background: var(--bg-panel, #ffffff);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   padding: 20px;
@@ -98,7 +98,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  border-bottom: 1px solid var(--border-light, #f1f5f9);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 12px;
 }
 
@@ -125,7 +125,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  background: var(--bg-base, #f8fafc);
+  background: var(--bg-base);
   border-radius: 8px;
 }
 
@@ -158,7 +158,7 @@
 }
 
 .horizon-box {
-  background: var(--bg-base, #f8fafc);
+  background: var(--bg-base);
   padding: 10px;
   border-radius: 8px;
   text-align: center;
@@ -212,7 +212,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 14px;
-  background: var(--bg-base, #f8fafc);
+  background: var(--bg-base);
 }
 
 .rec-item-top {
@@ -253,3 +253,7 @@
 .status--pending { background: #fef3c7; color: #b45309; }
 .status--approved { background: #dcfce7; color: #15803d; }
 .status--rejected { background: #fee2e2; color: #b91c1c; }
+
+html.dark .status--pending { background: rgba(217, 119, 6, 0.2); color: #fbbf24; }
+html.dark .status--approved { background: rgba(22, 163, 74, 0.2); color: #4ade80; }
+html.dark .status--rejected { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }

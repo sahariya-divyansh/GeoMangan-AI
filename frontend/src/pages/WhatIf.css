@@ -13,7 +13,7 @@
 }
 
 .controls {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
@@ -36,7 +36,7 @@
 }
 
 .result {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
@@ -59,7 +59,7 @@
 .disclaimer { font-size: 11px; color: var(--text-muted); margin-top: auto; line-height: 1.5; }
 
 .chart-box {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
@@ -81,3 +81,7 @@
 .badge--high   { background: #fee2e2; color: #dc2626; }
 .badge--medium { background: #fef3c7; color: #d97706; }
 .badge--low    { background: #dcfce7; color: #16a34a; }
+
+html.dark .badge--high   { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+html.dark .badge--medium { background: rgba(217, 119, 6, 0.2); color: #fcd34d; }
+html.dark .badge--low    { background: rgba(22, 163, 74, 0.2); color: #86efac; }

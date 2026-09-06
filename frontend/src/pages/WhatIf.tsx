@@ -133,7 +133,8 @@ export default function WhatIf() {
               <XAxis dataKey="week" stroke="var(--text-muted)" fontSize={11} />
               <YAxis stroke="var(--text-muted)" fontSize={11} />
               <Tooltip
-                contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }}
+                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11, color: 'var(--text-primary)' }}
+                labelStyle={{ color: 'var(--text-primary)' }}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Area type="monotone" dataKey="Baseline"  stroke="#94a3b8" fill="#e2e8f0" fillOpacity={0.5} />

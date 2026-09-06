@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts'
 import { api } from '../services/api'
 import type { ForecastRow, DiagnosisResult, LSTMResult } from '../types'
@@ -114,7 +114,7 @@ export default function Production() {
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
               <XAxis dataKey="mine" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }} />
+              <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11, color: 'var(--text-primary)' }} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="Target"   fill="#cbd5e1" radius={[4,4,0,0]} />
               <Bar dataKey="Forecast" fill="#16a34a" radius={[4,4,0,0]} />
@@ -127,14 +127,14 @@ export default function Production() {
         <table className="table">
           <thead>
             <tr>
-              <th>Mine</th>
-              <th>Monthly Target</th>
-              <th>7-Day</th>
-              <th>30-Day</th>
-              <th>90-Day</th>
-              <th>Risk</th>
-              <th>Primary Cause</th>
-              <th>Diagnosis</th>
+              <th className="col-mine">Mine</th>
+              <th className="col-target">Monthly Target</th>
+              <th className="col-7d">7-Day</th>
+              <th className="col-30d">30-Day</th>
+              <th className="col-90d">90-Day</th>
+              <th className="col-risk">Risk</th>
+              <th className="col-cause">Primary Cause</th>
+              <th className="col-diag">Diagnosis</th>
             </tr>
           </thead>
           <tbody>
@@ -158,15 +158,15 @@ export default function Production() {
                   const diag = diagnoses[f.mine]
 
                   return (
-                    <tr key={f.mine} style={{ display: 'table-row-group' }}>
-                      <tr key={`${f.mine}-main`}>
+                    <Fragment key={f.mine}>
+                      <tr>
                         <td className="bold">{f.mine}</td>
                         <td>{f.target.toLocaleString()}</td>
                         <td>{f.d7.toLocaleString()}</td>
                         <td className={shortfall ? 'negative' : 'positive'}>{f.d30.toLocaleString()}</td>
                         <td>{f.d90.toLocaleString()}</td>
                         <td><span className={`badge badge--${f.risk.toLowerCase()}`}>{f.risk}</span></td>
-                        <td className="reason">{f.reason}</td>
+                        <td className="reason" title={f.reason}>{f.reason}</td>
                         <td>
                           <button
                             className={`btn-diagnose ${isExpanded ? 'btn-diagnose--active' : ''}`}
@@ -177,7 +177,7 @@ export default function Production() {
                         </td>
                       </tr>
                       {isExpanded && (
-                        <tr key={`${f.mine}-diag`} className="diag-row">
+                        <tr className="diag-row">
                           <td colSpan={8}>
                             <div className="diag-panel">
                               {isLoadingDiag ? (
@@ -215,7 +215,7 @@ export default function Production() {
                           </td>
                         </tr>
                       )}
-                    </tr>
+                    </Fragment>
                   )
                 })}
           </tbody>

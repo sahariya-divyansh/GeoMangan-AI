@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { api } from '../services/api'
 import type { ProspectivityZone } from '../types'
@@ -124,8 +124,8 @@ export default function Exploration() {
                   const factors = explanations[z.id]
 
                   return (
-                    <tr key={z.id} style={{ display: 'table-row-group' }}>
-                      <tr key={`${z.id}-main`}>
+                    <Fragment key={z.id}>
+                      <tr>
                         <td className="muted">{z.id}</td>
                         <td>{z.mineId}</td>
                         <td>
@@ -152,7 +152,7 @@ export default function Exploration() {
                         </td>
                       </tr>
                       {isExpanded && (
-                        <tr key={`${z.id}-explain`} className="explain-row">
+                        <tr className="explain-row">
                           <td colSpan={8}>
                             <div className="explain-panel">
                               <span className="explain-title">Top 3 Contributing Factors (SHAP AI):</span>
@@ -176,7 +176,7 @@ export default function Exploration() {
                           </td>
                         </tr>
                       )}
-                    </tr>
+                    </Fragment>
                   )
                 })}
           </tbody>

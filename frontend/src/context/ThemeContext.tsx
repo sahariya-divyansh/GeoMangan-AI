@@ -11,11 +11,9 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('geomangan_theme')
-    if (saved === 'dark' || saved === 'light') return saved
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  })
+  const [theme, setTheme] = useState<'light'|'dark'>(
+    () => (localStorage.getItem('geomangan_theme') as 'light'|'dark') || 'light'
+  )
 
   useEffect(() => {
     localStorage.setItem('geomangan_theme', theme)

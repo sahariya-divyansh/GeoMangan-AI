@@ -15,7 +15,7 @@
 }
 
 .table-container {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
@@ -29,20 +29,20 @@
   font-size: 11px; font-weight: 600; text-transform: uppercase;
   letter-spacing: 0.05em; color: var(--text-secondary);
   border-bottom: 1px solid var(--border);
-  background: #f8fafc;
+  background: var(--bg-base);
 }
 
 .table td { padding: 14px 16px; border-bottom: 1px solid var(--border-light); color: var(--text-secondary); }
 
 .table tr:last-child td { border-bottom: none; }
 
-.table tr:hover td { background: #f8fafc; color: var(--text-primary); }
+.table tr:hover td { background: var(--border-light); color: var(--text-primary); }
 
 .muted { color: var(--text-muted) !important; }
 
 .score-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; }
 
-.score-bar { width: 64px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.score-bar { width: 64px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
 
 .score-fill { height: 100%; border-radius: 3px; }
 
@@ -60,10 +60,14 @@
 .badge--medium { background: #fef3c7; color: #d97706; }
 .badge--low    { background: #fee2e2; color: #dc2626; }
 
+html.dark .badge--high   { background: rgba(22, 163, 74, 0.2); color: #86efac; }
+html.dark .badge--medium { background: rgba(217, 119, 6, 0.2); color: #fcd34d; }
+html.dark .badge--low    { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+
 .action-cell { font-size: 12px; max-width: 260px; line-height: 1.5; color: var(--text-secondary); }
 
 .btn-explain {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--accent);
   padding: 4px 12px;
@@ -75,7 +79,7 @@
 }
 
 .btn-explain:hover {
-  background: #f1f5f9;
+  background: var(--border-light);
   border-color: var(--accent);
 }
 
@@ -87,7 +91,7 @@
 
 .explain-row td {
   padding: 0 !important;
-  background: #f8fafc;
+  background: var(--bg-base);
 }
 
 .explain-panel {
@@ -116,7 +120,7 @@
 }
 
 .factor-tag {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: 6px;
@@ -143,7 +147,7 @@
 
 .disclaimer {
   font-size: 11px; color: var(--text-secondary);
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border); border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 12px 16px; line-height: 1.6;

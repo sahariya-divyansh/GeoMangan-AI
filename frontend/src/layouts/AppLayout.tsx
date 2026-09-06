@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
-import Disclaimer from '../components/Disclaimer/Disclaimer'
 import './AppLayout.css'
 
 export default function AppLayout() {
@@ -25,7 +24,6 @@ export default function AppLayout() {
         <main className="app-layout__main">
           <Outlet />
         </main>
-        <Disclaimer />
       </div>
     </div>
   )
