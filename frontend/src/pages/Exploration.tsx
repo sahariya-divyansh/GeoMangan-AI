@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { api } from '../services/api'
 import type { ProspectivityZone } from '../types'
+import Skeleton from '../components/Skeleton/Skeleton'
 import 'leaflet/dist/leaflet.css'
 import './Exploration.css'
 
@@ -52,8 +53,6 @@ export default function Exploration() {
     }
   }
 
-  if (loading) return <p style={{ color: 'var(--text-muted)', padding: 24 }}>Loading...</p>
-
   return (
     <div className="page">
       <div className="page-header">
@@ -62,29 +61,33 @@ export default function Exploration() {
       </div>
 
       <div className="map-wrapper">
-        <MapContainer center={[21.7, 79.9]} zoom={8} style={{ height: '100%', width: '100%' }}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="OpenStreetMap"
-          />
-          {zones.map(z => (
-            <CircleMarker
-              key={z.id}
-              center={[z.lat, z.lng]}
-              radius={14}
-              pathOptions={{ color: getColor(z.score), fillColor: getColor(z.score), fillOpacity: 0.5 }}
-            >
-              <Popup>
-                <div style={{ fontSize: 12, lineHeight: 1.6 }}>
-                  <strong>{z.id}</strong><br />
-                  Score: {z.score}<br />
-                  Confidence: {z.confidence}<br />
-                  Action: {z.action}
-                </div>
-              </Popup>
-            </CircleMarker>
-          ))}
-        </MapContainer>
+        {loading ? (
+          <Skeleton width="100%" height="100%" borderRadius={12} />
+        ) : (
+          <MapContainer center={[21.7, 79.9]} zoom={8} style={{ height: '100%', width: '100%' }}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="OpenStreetMap"
+            />
+            {zones.map(z => (
+              <CircleMarker
+                key={z.id}
+                center={[z.lat, z.lng]}
+                radius={14}
+                pathOptions={{ color: getColor(z.score), fillColor: getColor(z.score), fillOpacity: 0.5 }}
+              >
+                <Popup>
+                  <div style={{ fontSize: 12, lineHeight: 1.6 }}>
+                    <strong>{z.id}</strong><br />
+                    Score: {z.score}<br />
+                    Confidence: {z.confidence}<br />
+                    Action: {z.action}
+                  </div>
+                </Popup>
+              </CircleMarker>
+            ))}
+          </MapContainer>
+        )}
       </div>
 
       <div className="table-container">
@@ -102,71 +105,83 @@ export default function Exploration() {
             </tr>
           </thead>
           <tbody>
-            {zones.map(z => {
-              const isExpanded = expandedZoneId === z.id
-              const isLoading = loadingExplain[z.id]
-              const factors = explanations[z.id]
-
-              return (
-                <>
-                  <tr key={z.id}>
-                    <td className="muted">{z.id}</td>
-                    <td>{z.mineId}</td>
-                    <td>
-                      <div className="score-cell">
-                        <div className="score-bar">
-                          <div className="score-fill" style={{ width: `${z.score}%`, background: getColor(z.score) }} />
-                        </div>
-                        <span>{z.score}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`badge badge--${z.confidence.toLowerCase()}`}>{z.confidence}</span>
-                    </td>
-                    <td>{z.ndvi}</td>
-                    <td>{z.ironIndex}</td>
-                    <td className="action-cell">{z.action}</td>
-                    <td>
-                      <button
-                        className={`btn-explain ${isExpanded ? 'btn-explain--active' : ''}`}
-                        onClick={() => handleExplain(z)}
-                      >
-                        {isExpanded ? 'Hide' : 'Explain'}
-                      </button>
-                    </td>
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skel-exp-${i}`}>
+                    <td><Skeleton width={60} height={16} /></td>
+                    <td><Skeleton width={90} height={16} /></td>
+                    <td><Skeleton width={70} height={16} /></td>
+                    <td><Skeleton width={65} height={20} borderRadius={999} /></td>
+                    <td><Skeleton width={40} height={16} /></td>
+                    <td><Skeleton width={40} height={16} /></td>
+                    <td><Skeleton width={120} height={16} /></td>
+                    <td><Skeleton width={70} height={24} borderRadius={6} /></td>
                   </tr>
-                  {isExpanded && (
-                    <tr key={`${z.id}-explain`} className="explain-row">
-                      <td colSpan={8}>
-                        <div className="explain-panel">
-                          <span className="explain-title">Top 3 Contributing Factors (SHAP AI):</span>
-                          {isLoading ? (
-                            <span className="explain-loading">Calculating SHAP impact values...</span>
-                          ) : factors && factors.length > 0 ? (
-                            <div className="explain-factors">
-                              {factors.map((item, idx) => (
-                                <span key={idx} className="factor-tag">
-                                  <span className="factor-name">{item.feature}</span>
-                                  <span className={`factor-val ${item.impact >= 0 ? 'pos' : 'neg'}`}>
-                                    {item.impact >= 0 ? `+${item.impact}` : item.impact}
-                                  </span>
-                                </span>
-                              ))}
+                ))
+              : zones.map(z => {
+                  const isExpanded = expandedZoneId === z.id
+                  const isLoadingExplain = loadingExplain[z.id]
+                  const factors = explanations[z.id]
+
+                  return (
+                    <tr key={z.id} style={{ display: 'table-row-group' }}>
+                      <tr key={`${z.id}-main`}>
+                        <td className="muted">{z.id}</td>
+                        <td>{z.mineId}</td>
+                        <td>
+                          <div className="score-cell">
+                            <div className="score-bar">
+                              <div className="score-fill" style={{ width: `${z.score}%`, background: getColor(z.score) }} />
                             </div>
-                          ) : (
-                            <span className="explain-loading">No feature impacts available</span>
-                          )}
-                        </div>
-                      </td>
+                            <span>{z.score}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`badge badge--${z.confidence.toLowerCase()}`}>{z.confidence}</span>
+                        </td>
+                        <td>{z.ndvi}</td>
+                        <td>{z.ironIndex}</td>
+                        <td className="action-cell">{z.action}</td>
+                        <td>
+                          <button
+                            className={`btn-explain ${isExpanded ? 'btn-explain--active' : ''}`}
+                            onClick={() => handleExplain(z)}
+                          >
+                            {isExpanded ? 'Hide' : 'Explain'}
+                          </button>
+                        </td>
+                      </tr>
+                      {isExpanded && (
+                        <tr key={`${z.id}-explain`} className="explain-row">
+                          <td colSpan={8}>
+                            <div className="explain-panel">
+                              <span className="explain-title">Top 3 Contributing Factors (SHAP AI):</span>
+                              {isLoadingExplain ? (
+                                <span className="explain-loading">Calculating SHAP impact values...</span>
+                              ) : factors && factors.length > 0 ? (
+                                <div className="explain-factors">
+                                  {factors.map((item, idx) => (
+                                    <span key={idx} className="factor-tag">
+                                      <span className="factor-name">{item.feature}</span>
+                                      <span className={`factor-val ${item.impact >= 0 ? 'pos' : 'neg'}`}>
+                                        {item.impact >= 0 ? `+${item.impact}` : item.impact}
+                                      </span>
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span className="explain-loading">No feature impacts available</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                     </tr>
-                  )}
-                </>
-              )
-            })}
+                  )
+                })}
           </tbody>
         </table>
       </div>
-
 
       <p className="disclaimer">
         Prospectivity scores are exploration-prioritization estimates derived from
@@ -175,4 +190,4 @@ export default function Exploration() {
       </p>
     </div>
   )
-}
+}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts'
 import { api } from '../services/api'
 import type { ForecastRow, DiagnosisResult, LSTMResult } from '../types'
+import Skeleton from '../components/Skeleton/Skeleton'
 import './Production.css'
 
 const mineInputs: Record<string, { equipment: number; rainfall: number; blast: number; grade: number; target_grade: number }> = {
@@ -75,14 +76,6 @@ export default function Production() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="page">
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
   const chartData = forecastRows.map(f => ({
     mine: f.mine.replace(' Mine', ''),
     Target: f.target,
@@ -113,17 +106,21 @@ export default function Production() {
       </div>
 
       <div className="chart-box">
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={chartData} margin={{ top: 8, right: 20, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
-            <XAxis dataKey="mine" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }} />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Bar dataKey="Target"   fill="#cbd5e1" radius={[4,4,0,0]} />
-            <Bar dataKey="Forecast" fill="#16a34a" radius={[4,4,0,0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {loading ? (
+          <Skeleton width="100%" height={240} borderRadius={8} />
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={chartData} margin={{ top: 8, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
+              <XAxis dataKey="mine" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar dataKey="Target"   fill="#cbd5e1" radius={[4,4,0,0]} />
+              <Bar dataKey="Forecast" fill="#16a34a" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       <div className="table-container">
@@ -141,73 +138,86 @@ export default function Production() {
             </tr>
           </thead>
           <tbody>
-            {forecastRows.map(f => {
-              const shortfall = f.d30 < f.target
-              const isExpanded = expandedMine === f.mine
-              const isLoading = loadingDiag[f.mine]
-              const diag = diagnoses[f.mine]
-
-              return (
-                <>
-                  <tr key={f.mine}>
-                    <td className="bold">{f.mine}</td>
-                    <td>{f.target.toLocaleString()}</td>
-                    <td>{f.d7.toLocaleString()}</td>
-                    <td className={shortfall ? 'negative' : 'positive'}>{f.d30.toLocaleString()}</td>
-                    <td>{f.d90.toLocaleString()}</td>
-                    <td><span className={`badge badge--${f.risk.toLowerCase()}`}>{f.risk}</span></td>
-                    <td className="reason">{f.reason}</td>
-                    <td>
-                      <button
-                        className={`btn-diagnose ${isExpanded ? 'btn-diagnose--active' : ''}`}
-                        onClick={() => handleDiagnose(f)}
-                      >
-                        {isExpanded ? 'Hide' : 'Diagnose'}
-                      </button>
-                    </td>
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skel-prod-${i}`}>
+                    <td><Skeleton width={110} height={16} /></td>
+                    <td><Skeleton width={80} height={16} /></td>
+                    <td><Skeleton width={70} height={16} /></td>
+                    <td><Skeleton width={70} height={16} /></td>
+                    <td><Skeleton width={70} height={16} /></td>
+                    <td><Skeleton width={60} height={20} borderRadius={999} /></td>
+                    <td><Skeleton width={140} height={16} /></td>
+                    <td><Skeleton width={70} height={24} borderRadius={6} /></td>
                   </tr>
-                  {isExpanded && (
-                    <tr key={`${f.mine}-diag`} className="diag-row">
-                      <td colSpan={8}>
-                        <div className="diag-panel">
-                          {isLoading ? (
-                            <span className="diag-loading">Diagnosing shortfall factors...</span>
-                          ) : diag ? (
-                            <div className="diag-content">
-                              <div className="diag-metric">
-                                <span className="diag-label">Shortfall Probability</span>
-                                <span className="diag-prob">{diag.shortfall_probability}%</span>
-                                <span className="diag-sub">({diag.shortfall_tonnes.toLocaleString()} t shortfall)</span>
-                              </div>
-                              <div className="diag-causes">
-                                <div className="diag-cause-item">
-                                  <span className="diag-cause-label">Primary Cause:</span>
-                                  <span className="diag-cause-val">{diag.primary_reason}</span>
-                                  <span className="diag-cause-pct">{diag.primary_contribution}%</span>
-                                </div>
-                                {diag.secondary_reason && (
-                                  <div className="diag-cause-item">
-                                    <span className="diag-cause-label">Secondary Cause:</span>
-                                    <span className="diag-cause-val">{diag.secondary_reason}</span>
-                                    <span className="diag-cause-pct">{diag.secondary_contribution}%</span>
+                ))
+              : forecastRows.map(f => {
+                  const shortfall = f.d30 < f.target
+                  const isExpanded = expandedMine === f.mine
+                  const isLoadingDiag = loadingDiag[f.mine]
+                  const diag = diagnoses[f.mine]
+
+                  return (
+                    <tr key={f.mine} style={{ display: 'table-row-group' }}>
+                      <tr key={`${f.mine}-main`}>
+                        <td className="bold">{f.mine}</td>
+                        <td>{f.target.toLocaleString()}</td>
+                        <td>{f.d7.toLocaleString()}</td>
+                        <td className={shortfall ? 'negative' : 'positive'}>{f.d30.toLocaleString()}</td>
+                        <td>{f.d90.toLocaleString()}</td>
+                        <td><span className={`badge badge--${f.risk.toLowerCase()}`}>{f.risk}</span></td>
+                        <td className="reason">{f.reason}</td>
+                        <td>
+                          <button
+                            className={`btn-diagnose ${isExpanded ? 'btn-diagnose--active' : ''}`}
+                            onClick={() => handleDiagnose(f)}
+                          >
+                            {isExpanded ? 'Hide' : 'Diagnose'}
+                          </button>
+                        </td>
+                      </tr>
+                      {isExpanded && (
+                        <tr key={`${f.mine}-diag`} className="diag-row">
+                          <td colSpan={8}>
+                            <div className="diag-panel">
+                              {isLoadingDiag ? (
+                                <span className="diag-loading">Diagnosing shortfall factors...</span>
+                              ) : diag ? (
+                                <div className="diag-content">
+                                  <div className="diag-metric">
+                                    <span className="diag-label">Shortfall Probability</span>
+                                    <span className="diag-prob">{diag.shortfall_probability}%</span>
+                                    <span className="diag-sub">({diag.shortfall_tonnes.toLocaleString()} t shortfall)</span>
                                   </div>
-                                )}
-                              </div>
-                              <div className="diag-action">
-                                <span className="diag-action-label">Suggested Action:</span>
-                                <span className="diag-action-text">{diag.suggested_action}</span>
-                              </div>
+                                  <div className="diag-causes">
+                                    <div className="diag-cause-item">
+                                      <span className="diag-cause-label">Primary Cause:</span>
+                                      <span className="diag-cause-val">{diag.primary_reason}</span>
+                                      <span className="diag-cause-pct">{diag.primary_contribution}%</span>
+                                    </div>
+                                    {diag.secondary_reason && (
+                                      <div className="diag-cause-item">
+                                        <span className="diag-cause-label">Secondary Cause:</span>
+                                        <span className="diag-cause-val">{diag.secondary_reason}</span>
+                                        <span className="diag-cause-pct">{diag.secondary_contribution}%</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="diag-action">
+                                    <span className="diag-action-label">Suggested Action:</span>
+                                    <span className="diag-action-text">{diag.suggested_action}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className="diag-loading">No diagnosis data available</span>
+                              )}
                             </div>
-                          ) : (
-                            <span className="diag-loading">No diagnosis data available</span>
-                          )}
-                        </div>
-                      </td>
+                          </td>
+                        </tr>
+                      )}
                     </tr>
-                  )}
-                </>
-              )
-            })}
+                  )
+                })}
           </tbody>
         </table>
       </div>
@@ -223,7 +233,7 @@ export default function Production() {
           </div>
 
           {loadingLstm ? (
-            <p className="lstm-loading">Running neural network time-series simulation...</p>
+            <Skeleton width="100%" height={60} borderRadius={8} />
           ) : lstmResult ? (
             <div className="lstm-grid">
               <div className="lstm-card">
@@ -251,4 +261,3 @@ export default function Production() {
     </div>
   )
 }
-

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  background: #ffffff;
+  background: var(--bg-panel, #ffffff);
   padding: 0 24px;
 }
 
@@ -28,7 +28,7 @@
 }
 
 .topbar__hamburger:hover {
-  background: #f1f5f9;
+  background: var(--border-light, #f1f5f9);
 }
 
 .topbar__identity {
@@ -40,7 +40,7 @@
 
 .topbar__title {
   margin: 0;
-  color: #0f172a;
+  color: var(--text-primary);
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
@@ -48,7 +48,7 @@
 
 .topbar__subtitle {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 11px;
   line-height: 1;
 }
@@ -63,7 +63,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
@@ -79,7 +79,24 @@
 }
 
 .topbar__status-text {
-  color: #64748b;
+  color: var(--text-secondary);
+}
+
+.topbar__theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+}
+
+.topbar__theme-toggle:hover {
+  background: var(--border-light, #f1f5f9);
 }
 
 @keyframes topbar-pulse {

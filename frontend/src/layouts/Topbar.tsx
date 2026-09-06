@@ -1,4 +1,5 @@
-import { Menu } from 'lucide-react'
+import { Menu, Sun, Moon } from 'lucide-react'
+import { useTheme } from '../context/ThemeContext'
 import NotificationBell from '../components/Notifications/NotificationBell'
 import './Topbar.css'
 
@@ -7,6 +8,8 @@ interface TopbarProps {
 }
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
+  const { theme, toggleTheme } = useTheme()
+
   return (
     <header className="topbar">
       <div className="topbar__left">
@@ -24,6 +27,14 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           <span className="topbar__status-dot" aria-hidden="true" />
           <span className="topbar__status-text">Operational</span>
         </div>
+        <button
+          className="topbar__theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
         <NotificationBell />
       </div>
     </header>

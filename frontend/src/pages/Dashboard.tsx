@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Download } from 'lucide-react'
+import { jsPDF } from 'jspdf'
 import {
   CartesianGrid,
   Line,
@@ -97,11 +99,128 @@ export default function Dashboard() {
     },
   ]
 
+  const exportPDF = () => {
+    const doc = new jsPDF()
+
+    // Header Title
+    doc.setFontSize(18)
+    doc.setFont('helvetica', 'bold')
+    doc.text('GeoMangan-AI — Dashboard Report', 14, 20)
+
+    // Date
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    const dateStr = `Date: ${new Date().toLocaleString('en-US')}`
+    doc.text(dateStr, 14, 28)
+
+    let y = 38
+
+    // Section 1: Stats Table
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('1. Key Metrics Overview', 14, y)
+    y += 6
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Metric', 14, y)
+    doc.text('Value', 120, y)
+    doc.setLineWidth(0.5)
+    doc.line(14, y + 2, 196, y + 2)
+    y += 8
+
+    doc.setFont('helvetica', 'normal')
+    stats.forEach(st => {
+      doc.text(String(st.label), 14, y)
+      doc.text(String(st.value), 120, y)
+      y += 6
+    })
+
+    y += 6
+
+    // Section 2: Weather Telemetry
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('2. Mine Site Weather Telemetry', 14, y)
+    y += 6
+
+    const selectedMineObj = mines.find(m => m.id === selectedMine) || mines[0]
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Selected Mine: ${selectedMineObj.name}`, 14, y)
+    y += 6
+
+    doc.setFont('helvetica', 'bold')
+    doc.text('Rainfall (mm)', 14, y)
+    doc.text('Temperature (°C)', 70, y)
+    doc.text('Humidity (%)', 130, y)
+    doc.line(14, y + 2, 196, y + 2)
+    y += 8
+
+    doc.setFont('helvetica', 'normal')
+    if (weather) {
+      doc.text(`${weather.avg_rainfall_mm} mm`, 14, y)
+      doc.text(`${weather.avg_temperature_c} °C`, 70, y)
+      doc.text(`${weather.avg_humidity_pct} %`, 130, y)
+    } else {
+      doc.text('N/A', 14, y)
+      doc.text('N/A', 70, y)
+      doc.text('N/A', 130, y)
+    }
+    y += 12
+
+    // Section 3: Mines Table
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text('3. Active Mines Summary', 14, y)
+    y += 6
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Mine', 14, y)
+    doc.text('Target (t)', 60, y)
+    doc.text('Actual (t)', 95, y)
+    doc.text('Variance', 130, y)
+    doc.text('Risk', 165, y)
+    doc.line(14, y + 2, 196, y + 2)
+    y += 8
+
+    doc.setFont('helvetica', 'normal')
+    mines.forEach(m => {
+      if (y > 270) {
+        doc.addPage()
+        y = 20
+      }
+      const variance = m.actual - m.monthlyTarget
+      const varStr = (variance >= 0 ? '+' : '') + variance.toLocaleString()
+      doc.text(m.name, 14, y)
+      doc.text(m.monthlyTarget.toLocaleString(), 60, y)
+      doc.text(m.actual.toLocaleString(), 95, y)
+      doc.text(varStr, 130, y)
+      doc.text(m.risk, 165, y)
+      y += 7
+    })
+
+    // Footer
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'italic')
+    doc.setTextColor(128, 128, 128)
+    doc.text('Prototype — synthetic data only', 14, 285)
+
+    doc.save('geomangan-dashboard-report.pdf')
+  }
+
   return (
     <section className="dashboard">
       <div className="dashboard__header">
-        <h2>Dashboard</h2>
-        <p>System overview across all active mines</p>
+        <div>
+          <h2>Dashboard</h2>
+          <p>System overview across all active mines</p>
+        </div>
+        <button className="btn-export-report" onClick={exportPDF}>
+          <Download size={14} />
+          Export Report
+        </button>
       </div>
 
       <div className="dashboard__stats">

@@ -3,6 +3,7 @@ import { Download } from 'lucide-react'
 import { jsPDF } from 'jspdf'
 import { api } from '../services/api'
 import type { Recommendation } from '../types'
+import Skeleton from '../components/Skeleton/Skeleton'
 import './Recommendations.css'
 
 export default function Recommendations() {
@@ -69,14 +70,6 @@ export default function Recommendations() {
     doc.save('recommendations-report.pdf')
   }
 
-  if (loading) {
-    return (
-      <div className="page">
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
   const pending  = recs.filter(r => r.status === 'Pending').length
   const approved = recs.filter(r => r.status === 'Approved').length
   const rejected = recs.filter(r => r.status === 'Rejected').length
@@ -92,42 +85,61 @@ export default function Recommendations() {
           <h1 className="page-title">Recommendations</h1>
           <p className="page-desc">AI-generated corrective actions requiring officer approval</p>
         </div>
-        <button className="btn btn--export" onClick={exportPDF}>
+        <button className="btn btn--export" onClick={exportPDF} disabled={loading}>
           <Download size={14} />
           Export PDF
         </button>
       </div>
 
       <div className="summary-bar">
-        <span className="summary-item pending">{pending} Pending</span>
-        <span className="summary-item approved">{approved} Approved</span>
-        <span className="summary-item rejected">{rejected} Rejected</span>
+        {loading ? (
+          <Skeleton width={200} height={20} />
+        ) : (
+          <>
+            <span className="summary-item pending">{pending} Pending</span>
+            <span className="summary-item approved">{approved} Approved</span>
+            <span className="summary-item rejected">{rejected} Rejected</span>
+          </>
+        )}
       </div>
 
       <div className="rec-list">
-        {recs.map(r => (
-          <div key={r.id} className={`rec-card rec-card--${r.severity.toLowerCase()}`}>
-            <div className="rec-top">
-              <span className={`badge badge--${r.severity.toLowerCase()}`}>{r.severity}</span>
-              <span className="rec-mine">{r.mine}</span>
-              <span className={`rec-status status--${r.status.toLowerCase()}`}>{r.status}</span>
-            </div>
-            <p className="rec-title">{r.title}</p>
-            <p className="rec-reason">{r.reason}</p>
-            <p className="rec-recovery">{r.recovery}</p>
-            {r.status === 'Pending' && (
-              <div className="rec-actions">
-                <button className="btn btn--approve" onClick={() => decide(r.id, 'Approved')}>
-                  Approve
-                </button>
-                <button className="btn btn--reject" onClick={() => decide(r.id, 'Rejected')}>
-                  Reject
-                </button>
+        {loading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <div key={`skel-rec-${i}`} className="rec-card" style={{ padding: 16 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <Skeleton width={80} height={20} borderRadius={999} />
+                  <Skeleton width={120} height={16} />
+                  <Skeleton width={60} height={16} />
+                </div>
+                <Skeleton width="60%" height={18} style={{ marginBottom: 8 }} />
+                <Skeleton width="90%" height={14} style={{ marginBottom: 6 }} />
+                <Skeleton width="40%" height={14} />
               </div>
-            )}
-          </div>
-        ))}
+            ))
+          : recs.map(r => (
+              <div key={r.id} className={`rec-card rec-card--${r.severity.toLowerCase()}`}>
+                <div className="rec-top">
+                  <span className={`badge badge--${r.severity.toLowerCase()}`}>{r.severity}</span>
+                  <span className="rec-mine">{r.mine}</span>
+                  <span className={`rec-status status--${r.status.toLowerCase()}`}>{r.status}</span>
+                </div>
+                <p className="rec-title">{r.title}</p>
+                <p className="rec-reason">{r.reason}</p>
+                <p className="rec-recovery">{r.recovery}</p>
+                {r.status === 'Pending' && (
+                  <div className="rec-actions">
+                    <button className="btn btn--approve" onClick={() => decide(r.id, 'Approved')}>
+                      Approve
+                    </button>
+                    <button className="btn btn--reject" onClick={() => decide(r.id, 'Rejected')}>
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
       </div>
     </div>
   )
-}
+}

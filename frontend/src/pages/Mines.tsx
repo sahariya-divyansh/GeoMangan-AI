@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
 import type { Mine } from '../types'
+import Skeleton from '../components/Skeleton/Skeleton'
 import './Mines.css'
 
 export default function Mines() {
   const [mines, setMines] = useState<Mine[]>([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     api.getMines()
       .then((data) => setMines(data as Mine[]))
       .finally(() => setLoading(false))
   }, [])
-
-  if (loading) return <p style={{ color: 'var(--text-muted)', padding: 24 }}>Loading...</p>
 
   return (
     <div className="page">
@@ -23,7 +24,7 @@ export default function Mines() {
       </div>
 
       <div className="table-container">
-        <table className="table">
+        <table className="table table--clickable">
           <thead>
             <tr>
               <th>ID</th>
@@ -36,28 +37,39 @@ export default function Mines() {
             </tr>
           </thead>
           <tbody>
-            {mines.map(m => {
-              const variance = m.actual - m.monthlyTarget
-              return (
-                <tr key={m.id}>
-                  <td className="muted">{m.id}</td>
-                  <td className="bold">{m.name}</td>
-                  <td>{m.state}</td>
-                  <td>{m.monthlyTarget.toLocaleString()}</td>
-                  <td>{m.actual.toLocaleString()}</td>
-                  <td className={variance >= 0 ? 'positive' : 'negative'}>
-                    {variance >= 0 ? '+' : ''}{variance.toLocaleString()}
-                  </td>
-                  <td>
-                    <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
-                  </td>
-                </tr>
-              )
-            })}
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skel-${i}`}>
+                    <td><Skeleton width={60} height={16} /></td>
+                    <td><Skeleton width={130} height={16} /></td>
+                    <td><Skeleton width={80} height={16} /></td>
+                    <td><Skeleton width={90} height={16} /></td>
+                    <td><Skeleton width={90} height={16} /></td>
+                    <td><Skeleton width={80} height={16} /></td>
+                    <td><Skeleton width={60} height={20} borderRadius={999} /></td>
+                  </tr>
+                ))
+              : mines.map(m => {
+                  const variance = m.actual - m.monthlyTarget
+                  return (
+                    <tr key={m.id} onClick={() => navigate(`/mines/${m.id}`)}>
+                      <td className="muted">{m.id}</td>
+                      <td className="bold">{m.name}</td>
+                      <td>{m.state}</td>
+                      <td>{m.monthlyTarget.toLocaleString()}</td>
+                      <td>{m.actual.toLocaleString()}</td>
+                      <td className={variance >= 0 ? 'positive' : 'negative'}>
+                        {variance >= 0 ? '+' : ''}{variance.toLocaleString()}
+                      </td>
+                      <td>
+                        <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
+                      </td>
+                    </tr>
+                  )
+                })}
           </tbody>
         </table>
       </div>
-
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { api } from '../services/api'
 import type { WhatIfResult } from '../types'
+import Skeleton from '../components/Skeleton/Skeleton'
 import './WhatIf.css'
 
 export default function WhatIf() {
@@ -9,6 +10,7 @@ export default function WhatIf() {
   const [downtime, setDowntime] = useState(4.5)
   const [blast,    setBlast]    = useState(1)
   const [trucks,   setTrucks]   = useState(0)
+  const [loading,  setLoading]  = useState(true)
 
   const [result, setResult] = useState<WhatIfResult>({
     baseline: 16800,
@@ -18,9 +20,11 @@ export default function WhatIf() {
   })
 
   useEffect(() => {
+    setLoading(true)
     api.simulate({ rain, downtime, blast, trucks })
       .then(res => setResult(res))
       .catch(err => console.error(err))
+      .finally(() => setLoading(false))
   }, [rain, downtime, blast, trucks])
 
   const { baseline, predicted, delta, risk } = result
@@ -31,7 +35,6 @@ export default function WhatIf() {
     { week: 'W3', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.26) },
     { week: 'W4', Baseline: Math.round(baseline * 0.25), Predicted: Math.round(predicted * 0.25) },
   ]
-
 
   return (
     <div className="page">
@@ -44,73 +47,100 @@ export default function WhatIf() {
         <div className="controls">
           <p className="controls-label">Mine: Balaghat (prototype)</p>
 
-          <div className="slider-group">
-            <label className="slider-label">
-              Rainfall (mm/day) <strong>{rain}</strong>
-            </label>
-            <input type="range" min={0} max={80} value={rain}
-              onChange={e => setRain(+e.target.value)} className="slider" />
-          </div>
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={`skel-ctrl-${i}`} className="slider-group">
+                <Skeleton width={160} height={14} style={{ marginBottom: 8 }} />
+                <Skeleton width="100%" height={8} borderRadius={4} />
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="slider-group">
+                <label className="slider-label">
+                  Rainfall (mm/day) <strong>{rain}</strong>
+                </label>
+                <input type="range" min={0} max={80} value={rain}
+                  onChange={e => setRain(+e.target.value)} className="slider" />
+              </div>
 
-          <div className="slider-group">
-            <label className="slider-label">
-              Equipment Downtime (hrs) <strong>{downtime}</strong>
-            </label>
-            <input type="range" min={0} max={16} step={0.5} value={downtime}
-              onChange={e => setDowntime(+e.target.value)} className="slider" />
-          </div>
+              <div className="slider-group">
+                <label className="slider-label">
+                  Equipment Downtime (hrs) <strong>{downtime}</strong>
+                </label>
+                <input type="range" min={0} max={16} step={0.5} value={downtime}
+                  onChange={e => setDowntime(+e.target.value)} className="slider" />
+              </div>
 
-          <div className="slider-group">
-            <label className="slider-label">
-              Blasting Delay (hrs) <strong>{blast}</strong>
-            </label>
-            <input type="range" min={0} max={8} step={0.5} value={blast}
-              onChange={e => setBlast(+e.target.value)} className="slider" />
-          </div>
+              <div className="slider-group">
+                <label className="slider-label">
+                  Blasting Delay (hrs) <strong>{blast}</strong>
+                </label>
+                <input type="range" min={0} max={8} step={0.5} value={blast}
+                  onChange={e => setBlast(+e.target.value)} className="slider" />
+              </div>
 
-          <div className="slider-group">
-            <label className="slider-label">
-              Additional Trucks <strong>{trucks}</strong>
-            </label>
-            <input type="range" min={0} max={4} value={trucks}
-              onChange={e => setTrucks(+e.target.value)} className="slider" />
-          </div>
+              <div className="slider-group">
+                <label className="slider-label">
+                  Additional Trucks <strong>{trucks}</strong>
+                </label>
+                <input type="range" min={0} max={4} value={trucks}
+                  onChange={e => setTrucks(+e.target.value)} className="slider" />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="result">
-          <p className="result-label">Predicted 30-Day Production</p>
-          <p className="result-value" style={{ color: delta >= 0 ? 'var(--accent)' : 'var(--accent-danger)' }}>
-            {predicted.toLocaleString()} t
-          </p>
-          <p className="result-delta" style={{ color: delta >= 0 ? 'var(--accent)' : 'var(--accent-danger)' }}>
-            {delta >= 0 ? '+' : ''}{delta.toLocaleString()} t vs baseline
-          </p>
-          <div className="result-row">
-            <span className="result-key">Risk Level</span>
-            <span className={`badge badge--${risk.toLowerCase()}`}>{risk}</span>
-          </div>
-          <div className="result-row">
-            <span className="result-key">Baseline</span>
-            <span className="result-val">{baseline.toLocaleString()} t</span>
-          </div>
-          <p className="disclaimer">Rule-based estimate for planning reference only. Not a certified forecast.</p>
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Skeleton width={180} height={16} />
+              <Skeleton width={140} height={32} />
+              <Skeleton width={120} height={16} />
+              <Skeleton width="100%" height={24} />
+              <Skeleton width="100%" height={24} />
+            </div>
+          ) : (
+            <>
+              <p className="result-label">Predicted 30-Day Production</p>
+              <p className="result-value" style={{ color: delta >= 0 ? 'var(--accent)' : 'var(--accent-danger)' }}>
+                {predicted.toLocaleString()} t
+              </p>
+              <p className="result-delta" style={{ color: delta >= 0 ? 'var(--accent)' : 'var(--accent-danger)' }}>
+                {delta >= 0 ? '+' : ''}{delta.toLocaleString()} t vs baseline
+              </p>
+              <div className="result-row">
+                <span className="result-key">Risk Level</span>
+                <span className={`badge badge--${risk.toLowerCase()}`}>{risk}</span>
+              </div>
+              <div className="result-row">
+                <span className="result-key">Baseline</span>
+                <span className="result-val">{baseline.toLocaleString()} t</span>
+              </div>
+              <p className="disclaimer">Rule-based estimate for planning reference only. Not a certified forecast.</p>
+            </>
+          )}
         </div>
       </div>
 
       <div className="chart-box">
         <p className="chart-title">Weekly Breakdown — Baseline vs Predicted</p>
-        <ResponsiveContainer width="100%" height={200}>
-          <AreaChart data={chartData}>
-            <XAxis dataKey="week" stroke="var(--text-muted)" fontSize={11} />
-            <YAxis stroke="var(--text-muted)" fontSize={11} />
-            <Tooltip
-              contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }}
-            />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Area type="monotone" dataKey="Baseline"  stroke="#94a3b8" fill="#e2e8f0" fillOpacity={0.5} />
-            <Area type="monotone" dataKey="Predicted" stroke="#16a34a" fill="#16a34a" fillOpacity={0.2} />
-          </AreaChart>
-        </ResponsiveContainer>
+        {loading ? (
+          <Skeleton width="100%" height={200} borderRadius={8} />
+        ) : (
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={chartData}>
+              <XAxis dataKey="week" stroke="var(--text-muted)" fontSize={11} />
+              <YAxis stroke="var(--text-muted)" fontSize={11} />
+              <Tooltip
+                contentStyle={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 11 }}
+              />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Area type="monotone" dataKey="Baseline"  stroke="#94a3b8" fill="#e2e8f0" fillOpacity={0.5} />
+              <Area type="monotone" dataKey="Predicted" stroke="#16a34a" fill="#16a34a" fillOpacity={0.2} />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )
