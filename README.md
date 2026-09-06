@@ -40,6 +40,36 @@ npm run dev
 Open browser at `http://localhost:5173`
 
 ---
+## Screenshots
+
+### Landing Page
+![Landing Page](docs/Screenshots/01-landing.png)
+
+### Dashboard
+![Dashboard](docs/Screenshots/02-dashboard.png)
+
+### Mines
+![Mines](docs/Screenshots/03-mines.png)
+
+### Exploration Map
+![Exploration](docs/Screenshots/04-exploration.png)
+
+### Production Forecasting
+![Production](docs/Screenshots/05-production.png)
+
+### Recommendations
+![Recommendations](docs/Screenshots/06-recommendations.png)
+
+### What-If Simulator
+![What-If Simulator](docs/Screenshots/07-whatif.png)
+
+### PDF Export — Dashboard Report
+![PDF Dashboard](docs/Screenshots/09-pdf-dashboard.png)
+
+### PDF Export — Recommendations Report
+![PDF Recommendations](docs/Screenshots/08-pdf-recommendations.png)
+
+---
 
 ## What It Does
 
