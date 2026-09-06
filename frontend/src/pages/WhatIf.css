@@ -1,4 +1,4 @@
-.page { display: flex; flex-direction: column; gap: 24px; }
+.page { display: flex; flex-direction: column; gap: 24px; padding-bottom: 40px; }
 
 .page-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
 
