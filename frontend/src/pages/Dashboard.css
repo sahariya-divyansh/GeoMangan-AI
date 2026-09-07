@@ -68,6 +68,16 @@ html.dark .btn-export-report:hover {
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
+.dashboard__stat-card--alert {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+html.dark .dashboard__stat-card--alert {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .dashboard__stat-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
@@ -85,6 +95,114 @@ html.dark .btn-export-report:hover {
   font-size: 24px;
   font-weight: 700;
   line-height: 1;
+}
+
+.dashboard__mines-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mines-status__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.mines-status__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.mine-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.mine-card--alert {
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 1px #fca5a5, var(--shadow-sm);
+}
+
+.mine-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mine-card__title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mine-card__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  animation: pulse-red 1.5s infinite;
+}
+
+html.dark .alert-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.75; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.mine-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mine-card__metric {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.metric-label {
+  color: var(--text-muted);
+}
+
+.metric-val {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.metric-val.positive {
+  color: #16a34a;
+}
+
+.metric-val.negative {
+  color: #dc2626;
 }
 
 .dashboard__weather-panel {
@@ -217,4 +335,20 @@ html.dark .weather-badge--fallback {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-panel__header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-panel__subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
 }

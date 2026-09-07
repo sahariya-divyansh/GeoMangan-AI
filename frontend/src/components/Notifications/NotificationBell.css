@@ -92,14 +92,29 @@
   color: var(--text-muted);
 }
 
-.notification-bell__item {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  padding: 10px;
+.notification-bell__item--alert {
+  border-left: 3px solid #ef4444;
+}
+
+.notification-bell__mine-group {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
+}
+
+.alert-icon {
+  color: #ef4444;
+}
+
+.notification-bell__item-detail {
+  font-size: 11px;
+  color: var(--text-primary);
+  margin: 2px 0 0 0;
+}
+
+.notification-bell__item-meta {
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
 .notification-bell__item-top {

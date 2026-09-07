@@ -1,27 +1,34 @@
 import { useEffect, useState } from 'react'
-import { Download } from 'lucide-react'
+import { Download, AlertCircle } from 'lucide-react'
 import { jsPDF } from 'jspdf'
 import {
+  Area,
   CartesianGrid,
+  ComposedChart,
+  Legend,
   Line,
-  LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
-import { mines } from '../data/synthetic'
+import { mines as initialMines } from '../data/synthetic'
 import { api } from '../services/api'
+import { setAlertMines } from '../services/alertStore'
 import type { Mine, WeatherResult } from '../types'
 import './Dashboard.css'
 
-const monthlyData = [
-  { month: 'Jan', Target: 268000, Actual: 259400 },
-  { month: 'Feb', Target: 274000, Actual: 271200 },
-  { month: 'Mar', Target: 286000, Actual: 281800 },
-  { month: 'Apr', Target: 292000, Actual: 287300 },
-  { month: 'May', Target: 301000, Actual: 296900 },
-  { month: 'Jun', Target: 292500, Actual: 286570 },
+const trendData = [
+  { month: 'Jan', Historical: 259400, Target: 268000 },
+  { month: 'Feb', Historical: 271200, Target: 274000 },
+  { month: 'Mar', Historical: 281800, Target: 286000 },
+  { month: 'Apr', Historical: 287300, Target: 292000 },
+  { month: 'May', Historical: 296900, Target: 301000 },
+  { month: 'Jun', Historical: 286570, Forecast: 286570, ConfidenceBand: [Math.round(286570 * 0.92), Math.round(286570 * 1.08)], Target: 292500 },
+  { month: 'Jul', Forecast: 298000, ConfidenceBand: [Math.round(298000 * 0.92), Math.round(298000 * 1.08)], Target: 300000 },
+  { month: 'Aug', Forecast: 285000, ConfidenceBand: [Math.round(285000 * 0.92), Math.round(285000 * 1.08)], Target: 295000 },
+  { month: 'Sep', Forecast: 302000, ConfidenceBand: [Math.round(302000 * 0.92), Math.round(302000 * 1.08)], Target: 310000 },
 ]
 
 const formatTonnes = (value: number) => value.toLocaleString('en-IN')
@@ -30,10 +37,31 @@ const getTotal = (items: Mine[], field: 'monthlyTarget' | 'actual') =>
   items.reduce((total, mine) => total + mine[field], 0)
 
 export default function Dashboard() {
+  const [minesList, setMinesList] = useState<Mine[]>(initialMines)
   const [selectedMine, setSelectedMine] = useState<string>('mn-balaghat')
   const [weather, setWeather] = useState<WeatherResult | null>(null)
   const [weatherLoading, setWeatherLoading] = useState<boolean>(true)
   const [weatherFallback, setWeatherFallback] = useState<boolean>(false)
+
+  const fetchMines = () => {
+    api.getMines()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setMinesList(data)
+          setAlertMines(data)
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch real-time mines:', err)
+        setAlertMines(initialMines)
+      })
+  }
+
+  useEffect(() => {
+    fetchMines()
+    const interval = setInterval(fetchMines, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -65,10 +93,11 @@ export default function Dashboard() {
     }
   }, [selectedMine])
 
-  const totalMines = mines.length
-  const totalProduction = getTotal(mines, 'actual')
-  const totalTarget = getTotal(mines, 'monthlyTarget')
-  const minesAtRisk = mines.filter(
+  const totalMines = minesList.length
+  const totalProduction = getTotal(minesList, 'actual')
+  const totalTarget = getTotal(minesList, 'monthlyTarget')
+  const alertMinesCount = minesList.filter(m => m.actual < m.monthlyTarget * 0.95).length
+  const minesAtRisk = minesList.filter(
     (mine) => mine.risk === 'High' || mine.risk === 'Medium',
   ).length
 
@@ -86,12 +115,13 @@ export default function Dashboard() {
       value: formatTonnes(totalTarget),
     },
     {
-      label: 'Mines At Risk',
-      value: minesAtRisk,
+      label: 'Mines In Alert State',
+      value: alertMinesCount,
+      isAlert: alertMinesCount > 0,
     },
     {
-      label: 'High Prospectivity Zones',
-      value: 7,
+      label: 'Mines At Risk',
+      value: minesAtRisk,
     },
     {
       label: 'Equipment Alerts',
@@ -102,12 +132,10 @@ export default function Dashboard() {
   const exportPDF = () => {
     const doc = new jsPDF()
 
-    // Header Title
     doc.setFontSize(18)
     doc.setFont('helvetica', 'bold')
     doc.text('GeoMangan-AI — Dashboard Report', 14, 20)
 
-    // Date
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
     const dateStr = `Date: ${new Date().toLocaleString('en-US')}`
@@ -115,7 +143,6 @@ export default function Dashboard() {
 
     let y = 38
 
-    // Section 1: Stats Table
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text('1. Key Metrics Overview', 14, y)
@@ -138,13 +165,12 @@ export default function Dashboard() {
 
     y += 6
 
-    // Section 2: Weather Telemetry
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text('2. Mine Site Weather Telemetry', 14, y)
     y += 6
 
-    const selectedMineObj = mines.find(m => m.id === selectedMine) || mines[0]
+    const selectedMineObj = minesList.find(m => m.id === selectedMine) || minesList[0]
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
     doc.text(`Selected Mine: ${selectedMineObj.name}`, 14, y)
@@ -169,7 +195,6 @@ export default function Dashboard() {
     }
     y += 12
 
-    // Section 3: Mines Table
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text('3. Active Mines Summary', 14, y)
@@ -186,7 +211,7 @@ export default function Dashboard() {
     y += 8
 
     doc.setFont('helvetica', 'normal')
-    mines.forEach(m => {
+    minesList.forEach(m => {
       if (y > 270) {
         doc.addPage()
         y = 20
@@ -201,11 +226,10 @@ export default function Dashboard() {
       y += 7
     })
 
-    // Footer
     doc.setFontSize(9)
     doc.setFont('helvetica', 'italic')
     doc.setTextColor(128, 128, 128)
-    doc.text('Prototype — synthetic data only', 14, 285)
+    doc.text('Prototype — live synthetic telemetry', 14, 285)
 
     doc.save('geomangan-dashboard-report.pdf')
   }
@@ -225,12 +249,56 @@ export default function Dashboard() {
 
       <div className="dashboard__stats">
         {stats.map((stat) => (
-          <article className="dashboard__stat-card" key={stat.label}>
+          <article className={`dashboard__stat-card ${stat.isAlert ? 'dashboard__stat-card--alert' : ''}`} key={stat.label}>
             <span>{stat.label}</span>
             <strong>{stat.value}</strong>
           </article>
         ))}
       </div>
+
+      <section className="dashboard__mines-status">
+        <h3 className="mines-status__title">Mine Status & Performance Telemetry</h3>
+        <div className="mines-status__grid">
+          {minesList.map((m) => {
+            const isAlert = m.actual < m.monthlyTarget * 0.95
+            const variance = m.actual - m.monthlyTarget
+            const pct = Math.round((m.actual / m.monthlyTarget) * 100)
+
+            return (
+              <div key={m.id} className={`mine-card ${isAlert ? 'mine-card--alert' : ''}`}>
+                <div className="mine-card__header">
+                  <div className="mine-card__title-group">
+                    <span className="mine-card__name">{m.name}</span>
+                    {isAlert && (
+                      <span className="alert-badge">
+                        <AlertCircle size={12} />
+                        ALERT
+                      </span>
+                    )}
+                  </div>
+                  <span className={`badge badge--${m.risk.toLowerCase()}`}>{m.risk}</span>
+                </div>
+                <div className="mine-card__body">
+                  <div className="mine-card__metric">
+                    <span className="metric-label">Target:</span>
+                    <span className="metric-val">{m.monthlyTarget.toLocaleString()} t</span>
+                  </div>
+                  <div className="mine-card__metric">
+                    <span className="metric-label">Actual:</span>
+                    <span className="metric-val">{m.actual.toLocaleString()} t ({pct}%)</span>
+                  </div>
+                  <div className="mine-card__metric">
+                    <span className="metric-label">Variance:</span>
+                    <span className={`metric-val ${variance >= 0 ? 'positive' : 'negative'}`}>
+                      {variance >= 0 ? '+' : ''}{variance.toLocaleString()} t
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
 
       <section className="dashboard__weather-panel" aria-label="Weather metrics">
         <div className="weather-panel__header">
@@ -252,7 +320,7 @@ export default function Dashboard() {
               onChange={(e) => setSelectedMine(e.target.value)}
               className="weather-select"
             >
-              {mines.map((mine) => (
+              {minesList.map((mine) => (
                 <option key={mine.id} value={mine.id}>
                   {mine.name}
                 </option>
@@ -287,9 +355,15 @@ export default function Dashboard() {
         ) : null}
       </section>
 
-      <section className="dashboard__chart-panel" aria-label="Monthly production chart">
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart data={monthlyData} margin={{ top: 12, right: 20, left: 0, bottom: 0 }}>
+      <section className="dashboard__chart-panel" aria-label="Monthly production trend & 90-day forecast chart">
+        <div className="chart-panel__header">
+          <div>
+            <h3>Production Trend & 90-Day Forecast</h3>
+            <p className="chart-panel__subtitle">Historical actuals (Jan-Jun) vs Predictive Forecast (Jul-Sep)</p>
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={300}>
+          <ComposedChart data={trendData} margin={{ top: 20, right: 30, left: 10, bottom: 10 }}>
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
             <XAxis
               dataKey="month"
@@ -301,31 +375,59 @@ export default function Dashboard() {
               axisLine={false}
               tickLine={false}
               tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
+              domain={[240000, 340000]}
+              tickFormatter={(v) => `${Math.round(v / 1000)}k`}
             />
             <Tooltip
               contentStyle={{
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border)',
+                borderRadius: '8px',
                 color: 'var(--text-primary)',
               }}
-              labelStyle={{ color: 'var(--text-primary)' }}
+              formatter={(value: any, name?: any) => {
+                if (Array.isArray(value)) {
+                  return [`${value[0].toLocaleString()} - ${value[1].toLocaleString()} t`, 'Confidence Band (92-108%)']
+                }
+                return [`${Number(value).toLocaleString()} t`, String(name || '')]
+              }}
+            />
+
+            <Legend verticalAlign="top" height={36} />
+            <Area
+              type="monotone"
+              dataKey="ConfidenceBand"
+              name="Confidence Band"
+              fill="#3b82f6"
+              fillOpacity={0.15}
+              stroke="none"
             />
             <Line
               type="monotone"
-              dataKey="Target"
-              stroke="#94a3b8"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="Actual"
+              dataKey="Historical"
+              name="Historical"
               stroke="#16a34a"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
+              strokeWidth={2.5}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
             />
-          </LineChart>
+            <Line
+              type="monotone"
+              dataKey="Forecast"
+              name="Forecast"
+              stroke="#2563eb"
+              strokeWidth={2.5}
+              strokeDasharray="5 5"
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+            <ReferenceLine
+              x="Jun"
+              stroke="#ef4444"
+              strokeDasharray="3 3"
+              label={{ value: 'Today', fill: '#ef4444', position: 'top', fontSize: 12, fontWeight: 'bold' }}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </section>
     </section>

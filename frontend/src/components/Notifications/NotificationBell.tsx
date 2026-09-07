@@ -1,21 +1,27 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell } from 'lucide-react'
-import { api } from '../../services/api'
-import type { Recommendation } from '../../types'
+import { Bell, AlertTriangle } from 'lucide-react'
+import { subscribeAlerts, getAlertMines, type AlertMine } from '../../services/alertStore'
 import './NotificationBell.css'
 
-export default function NotificationBell() {
-  const [recs, setRecs] = useState<Recommendation[]>([])
+
+interface NotificationBellProps {
+  alertCount?: number
+}
+
+export default function NotificationBell({ alertCount: propAlertCount }: NotificationBellProps) {
+  const [alertMines, setAlertMines] = useState<AlertMine[]>(getAlertMines())
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.getRecommendations()
-      .then(data => setRecs(data))
-      .catch(err => console.error('Failed to load notifications:', err))
+    const unsubscribe = subscribeAlerts(alerts => {
+      setAlertMines(alerts)
+    })
+    return unsubscribe
   }, [])
+
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -27,13 +33,11 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Filter high severity pending recommendations
-  const highPendingAlerts = recs.filter(r => r.severity === 'High' && r.status === 'Pending')
-  const unreadCount = highPendingAlerts.length
+  const displayAlertCount = propAlertCount !== undefined ? propAlertCount : alertMines.length
 
   const handleView = () => {
     setIsOpen(false)
-    navigate('/recommendations')
+    navigate('/mines')
   }
 
   return (
@@ -44,33 +48,41 @@ export default function NotificationBell() {
         aria-label="View notifications"
       >
         <Bell size={18} />
-        {unreadCount > 0 && (
-          <span className="notification-bell__badge">{unreadCount}</span>
+        {displayAlertCount > 0 && (
+          <span className="notification-bell__badge">{displayAlertCount}</span>
         )}
       </button>
 
       {isOpen && (
         <div className="notification-bell__dropdown">
           <div className="notification-bell__header">
-            <h3 className="notification-bell__title">Alerts & Notifications</h3>
-            <span className="notification-bell__count">{unreadCount} High Pending</span>
+            <h3 className="notification-bell__title">Mine Status Alerts</h3>
+            <span className="notification-bell__count">{displayAlertCount} Mine(s) in ALERT</span>
           </div>
 
           <div className="notification-bell__list">
-            {highPendingAlerts.length === 0 ? (
+            {alertMines.length === 0 ? (
               <div className="notification-bell__empty">
-                No high-severity pending alerts
+                All mines operating within target thresholds (&ge; 95%)
               </div>
             ) : (
-              highPendingAlerts.map(alert => (
-                <div key={alert.id} className="notification-bell__item">
+              alertMines.map(alert => (
+                <div key={alert.id} className="notification-bell__item notification-bell__item--alert">
                   <div className="notification-bell__item-top">
-                    <span className="notification-bell__mine">{alert.mine}</span>
-                    <span className="badge badge--high">{alert.severity}</span>
+                    <div className="notification-bell__mine-group">
+                      <AlertTriangle size={14} className="alert-icon" />
+                      <span className="notification-bell__mine">{alert.name}</span>
+                    </div>
+                    <span className={`badge badge--${alert.risk.toLowerCase()}`}>{alert.risk} Risk</span>
                   </div>
-                  <p className="notification-bell__item-title">{alert.title}</p>
+                  <p className="notification-bell__item-detail">
+                    Shortfall: <strong>{alert.shortfall.toLocaleString()} tonnes</strong>
+                  </p>
+                  <div className="notification-bell__item-meta">
+                    Target: {alert.monthlyTarget.toLocaleString()} t | Actual: {alert.actual.toLocaleString()} t
+                  </div>
                   <button className="notification-bell__view-btn" onClick={handleView}>
-                    View
+                    Inspect Mine
                   </button>
                 </div>
               ))

@@ -1,5 +1,6 @@
 import { Menu, Sun, Moon } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { useLastUpdated } from '../hooks/useLastUpdated'
 import NotificationBell from '../components/Notifications/NotificationBell'
 import './Topbar.css'
 
@@ -9,6 +10,7 @@ interface TopbarProps {
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
   const { theme, toggleTheme } = useTheme()
+  const { timeAgo } = useLastUpdated()
 
   return (
     <header className="topbar">
@@ -26,6 +28,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         <div className="topbar__status" aria-label="System Status: Operational">
           <span className="topbar__status-dot" aria-hidden="true" />
           <span className="topbar__status-text">Operational</span>
+          <span className="topbar__last-updated">• Last updated: {timeAgo}</span>
         </div>
         <button
           className="topbar__theme-toggle"
@@ -40,3 +43,4 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
     </header>
   )
 }
+

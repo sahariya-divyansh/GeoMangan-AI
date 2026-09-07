@@ -7,17 +7,21 @@ import {
   SlidersHorizontal,
   LayoutDashboard,
   Pickaxe,
+  Wrench,
+  GitCompare,
   X,
 } from 'lucide-react'
 import './Sidebar.css'
 
 const navigation = [
-  { name: 'Dashboard',        path: '/dashboard',       icon: LayoutDashboard },
-  { name: 'Mines',            path: '/mines',            icon: Factory },
-  { name: 'Exploration',      path: '/exploration',      icon: Map },
-  { name: 'Production',       path: '/production',       icon: BarChart3 },
-  { name: 'Recommendations',  path: '/recommendations',  icon: Lightbulb },
-  { name: 'What-if Simulator',path: '/whatif',           icon: SlidersHorizontal },
+  { name: 'Dashboard',         path: '/dashboard',        icon: LayoutDashboard },
+  { name: 'Mines',             path: '/mines',            icon: Factory },
+  { name: 'Exploration',       path: '/exploration',      icon: Map },
+  { name: 'Equipment',         path: '/equipment',        icon: Wrench },
+  { name: 'Production',        path: '/production',       icon: BarChart3 },
+  { name: 'Recommendations',   path: '/recommendations',  icon: Lightbulb },
+  { name: 'What-if Simulator', path: '/whatif',           icon: SlidersHorizontal },
+  { name: 'Compare Mines',     path: '/compare',          icon: GitCompare },
 ]
 
 interface SidebarProps {

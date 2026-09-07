@@ -1,12 +1,14 @@
 import type { ForecastRow, Recommendation, WhatIfInput, WhatIfResult, DiagnosisResult, LSTMResult, WeatherResult } from '../types'
+import { setLastUpdated } from '../hooks/useLastUpdated'
 
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`)
   if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
+  const data = await res.json()
+  setLastUpdated(new Date())
+  return data
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {
@@ -39,7 +41,9 @@ export const api = {
   diagnose:           (body: unknown) => post<DiagnosisResult>('/api/production/diagnose', body),
   lstmForecast:       (body: unknown) => post<LSTMResult>('/api/production/lstm-forecast', body),
   getWeather:         (mineId: string) => get<WeatherResult>(`/api/weather/${mineId}`),
+  predictAnomaly:     (body: unknown) => post<{ anomaly_risk?: number; is_anomaly?: boolean; anomaly_score?: number } | number>('/api/predict/anomaly', body),
 }
+
 
 
 

@@ -82,6 +82,12 @@
   color: var(--text-secondary);
 }
 
+.topbar__last-updated {
+  color: var(--text-muted, #64748b);
+  font-size: 11px;
+  font-weight: 400;
+}
+
 .topbar__theme-toggle {
   background: transparent;
   border: 1px solid var(--border);
