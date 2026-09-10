@@ -54,6 +54,9 @@ Open browser at `http://localhost:5173`
 ### Exploration Map
 ![Exploration](docs/Screenshots/exploration.png)
 
+### Equipment
+![Equipment](docs/Screenshots/equipment.png)
+
 ### Production Forecasting
 ![Production](docs/Screenshots/production.png)
 
@@ -62,6 +65,9 @@ Open browser at `http://localhost:5173`
 
 ### What-If Simulator
 ![What-If Simulator](docs/Screenshots/whatif.png)
+
+### Compare Mines
+![Compare](docs/Screenshots/compare.png)
 
 ### PDF Export — Dashboard Report
 ![PDF Dashboard](docs/Screenshots/pdf-dashboards.png)
